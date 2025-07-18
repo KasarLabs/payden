@@ -12,8 +12,11 @@ fn main() {
     #[cfg(feature = "button_primary")]
     mount::mount_to_body(sig! {
         view! {
-            <Preview class="m-auto">
-                <ButtonPrimary text="Send"></ButtonPrimary>
+            <Preview class="flex flex-col justify-end m-auto">
+                <ButtonPrimary on_press=|| { logging::log!("Button pressed") }>
+                    <IconSend size=24 {..} class="stroke-current stroke-1 m-auto"/>
+                    Send
+                </ButtonPrimary>
             </Preview>
         }
     });

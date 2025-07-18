@@ -20,6 +20,7 @@ icons = []
 leptos.workspace = true
 leptos_router.workspace = true
 leptos_meta.workspace = true
+leptos-use.workspace = true
 
 gloo-net.workspace = true
 console_error_panic_hook.workspace = true
