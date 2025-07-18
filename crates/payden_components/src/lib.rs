@@ -1,7 +1,18 @@
-pub mod balance;
-pub mod button_primary;
-pub mod button_secondary;
-pub mod footer;
-pub mod header;
-pub mod input_dropdown;
-pub mod input_field;
+mod balance;
+mod button_primary;
+mod button_secondary;
+mod footer;
+mod header;
+mod icons;
+mod input_dropdown;
+mod input_field;
+mod utils;
+
+pub use balance::*;
+pub use button_primary::*;
+pub use button_secondary::*;
+pub use footer::*;
+pub use header::*;
+pub use icons::*;
+pub use input_dropdown::*;
+pub use input_field::*;

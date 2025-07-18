@@ -3,4 +3,23 @@ name = "payden_components"
 version = "0.1.0"
 edition = "2024"
 
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "preview"
+path = "src/preview.rs"
+
+[features]
+default = []
+button_primary = []
+icons = []
+
 [dependencies]
+# Leptos
+leptos.workspace = true
+leptos_router.workspace = true
+leptos_meta.workspace = true
+
+gloo-net.workspace = true
+console_error_panic_hook.workspace = true

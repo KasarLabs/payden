@@ -1010,6 +1010,13 @@ checksum = "df94ce210e5bc13cb6651479fa48d14f601d9858cfe0467f43ae157023b938d3"
 [[package]]
 name = "payden_components"
 version = "0.1.0"
+dependencies = [
+ "console_error_panic_hook",
+ "gloo-net",
+ "leptos",
+ "leptos_meta",
+ "leptos_router",
+]
 
 [[package]]
 name = "payden_controller"
