@@ -1,0 +1,13 @@
+[package]
+name = "page"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+# Leptos
+leptos.workspace = true
+leptos_router.workspace = true
+leptos_meta.workspace = true
+
+gloo-net.workspace = true
+console_error_panic_hook.workspace = true
