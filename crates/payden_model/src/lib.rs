@@ -3,6 +3,7 @@ use reactive_stores::Store;
 #[derive(PartialEq, Eq, Default, Debug, Store)]
 pub struct Model {
     page: Page,
+    addres: String,
 }
 
 #[derive(PartialEq, Eq, Default, Debug, Clone)]

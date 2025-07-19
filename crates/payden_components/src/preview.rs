@@ -13,36 +13,38 @@ fn main() {
 
     let model = Store::new(Model::default());
 
+    const ICON_SIZE: u32 = 18;
+
     #[cfg(feature = "button_primary")]
     mount::mount_to_body(sig! {
         view! {
             <Preview class="grid grid-cols-2 m-auto gap-8 border-1 border-red-600">
                 <ButtonSwitch
-                    on_press=move || { model.page().set(Page::Send) }
-                    active=move || { model.page().get() == Page::Send }
+                    on_press=sig!{ model.page().set(Page::Send) }
+                    active=sig!{ model.page().get() == Page::Send }
                 >
-                    <IconSend size=24 {..} class="stroke-current stroke-1 m-auto"/>
+                    <IconSend size={ ICON_SIZE } {..} class="stroke-current stroke-1.5 m-auto"/>
                     Send
                 </ButtonSwitch>
                 <ButtonSwitch
-                    on_press=move || { model.page().set(Page::Receive) }
-                    active=move || { model.page().get() == Page::Receive }
+                    on_press=sig!{ model.page().set(Page::Receive) }
+                    active=sig!{ model.page().get() == Page::Receive }
                 >
-                    <IconQr size=24 {..} class="stroke-current stroke-1 m-auto"/>
+                    <IconQr size={ ICON_SIZE } {..} class="stroke-current stroke-1.5 m-auto"/>
                     Receive
                 </ButtonSwitch>
                 <ButtonSwitch
-                    on_press=move || { model.page().set(Page::Faucet) }
-                    active=move || { model.page().get() == Page::Faucet }
+                    on_press=sig!{ model.page().set(Page::Faucet) }
+                    active=sig!{ model.page().get() == Page::Faucet }
                 >
-                    <IconDrop size=24 {..} class="stroke-current stroke-1 m-auto"/>
+                    <IconDrop size={ ICON_SIZE } {..} class="stroke-current stroke-1.5 m-auto"/>
                     Faucet
                 </ButtonSwitch>
                 <ButtonSwitch
-                    on_press=move || { model.page().set(Page::Activity) }
-                    active=move || { model.page().get() == Page::Activity }
+                    on_press=sig!{ model.page().set(Page::Activity) }
+                    active=sig!{ model.page().get() == Page::Activity }
                 >
-                    <IconPulse size=24 {..} class="stroke-current stroke-1 m-auto"/>
+                    <IconPulse size={ ICON_SIZE } {..} class="stroke-current stroke-1.5 m-auto"/>
                     Activity
                 </ButtonSwitch>
             </Preview>
@@ -69,4 +71,27 @@ fn main() {
             </Preview>
         }
     });
+
+    model
+        .addres()
+        .set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
+
+    #[cfg(feature = "input_text")]
+    mount::mount_to_body(sig! {
+        view! {
+            <Preview class="flex flex-row m-auto border-1 border-red-600">
+                <InputText
+                    text=sig! { model.addres().get() }
+                    text_update=sig! { text => model.addres().update(|address| {
+                        if text.len() < 2 {
+                            *address = "0x".to_string();
+                        } else if text.len() <= 42 {
+                            *address = text;
+                        }
+                    }) }
+                    text_validate=sig! { c => c.is_ascii_hexdigit() }
+                />
+            </Preview>
+        }
+    })
 }

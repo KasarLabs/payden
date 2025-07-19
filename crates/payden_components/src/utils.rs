@@ -4,6 +4,8 @@ use leptos_meta::*;
 #[macro_export]
 macro_rules! sig {
     ($signal:expr) => {{ move || $signal }};
+    ($($param:tt),+ $(,)? => $signal:expr) => {{ move |$($param,)+| $signal }};
+    (_ => $signal:expr) => {{ move |_| $signal }};
 }
 
 #[component]

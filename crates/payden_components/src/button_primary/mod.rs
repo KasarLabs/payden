@@ -1,4 +1,4 @@
-use leptos::{logging, prelude::*};
+use leptos::prelude::*;
 use leptos_use::*;
 
 #[component]
@@ -32,7 +32,7 @@ pub fn ButtonSwitch(
         <button
             on:click=on_click
             class="
-                font-body
+                font-body text-sm font-bold
                 flex flex-col justify-start
                 bg-current rounded-md
                 border-current border-1

@@ -14,6 +14,7 @@ path = "src/preview.rs"
 default = []
 button_primary = []
 icons = []
+input_text = []
 
 [dependencies]
 # Leptos
