@@ -17,9 +17,11 @@ leptos = { version = "0.8.3", features = ["csr", "nightly"] }
 leptos_router = { version = "0.8.3" }
 leptos_meta = { version = "0.8.3" }
 leptos-use = { version = "0.16.2" }
+reactive_stores = { version = "0.2.3" }
 
 # Payden
 payden_components = { path = "crates/payden_components" }
+payden_model = { path = "crates/payden_model" }
 
 gloo-net = { version = "0.6.0", features = ["http"] }
 console_error_panic_hook = { version = "0.1.7" }
