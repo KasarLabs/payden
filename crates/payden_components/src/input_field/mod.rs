@@ -11,21 +11,42 @@ pub fn InputText(
 ) -> impl IntoView {
     const ANIMATION_DURATION: f64 = 150.0;
 
+    let (animate, animate_set) = signal(false);
+    let UseTimeoutFnReturn {
+        start: animate_start,
+        ..
+    } = use_timeout_fn(
+        move |_: ()| {
+            animate_set.set(false);
+        },
+        ANIMATION_DURATION,
+    );
+
     view! {
-        <form class="
-            font-body text-sm text-black font-bold
-            bg-current rounded-md
-            border-current border-1
-            transition-all duration-{ANIMATION_DURATION}
-            mt-0.5
-            focus-within:pb-0.5 focus-within:mt-0
-        ">
+        <form
+            class="
+                font-body text-sm text-black font-bold
+                bg-current rounded-md
+                border-current border-1
+                transition-all duration-{ANIMATION_DURATION}
+                focus-within:pb-0.5 focus-within:mt-0
+            "
+            class=(["mt-0.5"], sig! { !animate.get() })
+            class=(["pb-0.5", "mt-0"], sig! { animate.get() })
+        >
             <div class="
                 flex flex-row justify-center gap-1.5
                 bg-white rounded-md
                 p-1.5
             ">
-                <button>
+                <button
+                    type="button"
+                    on:mousedown=sig! { ev => ev.prevent_default() }
+                    on:click=sig! { _ => {
+                        animate_set.set(true);
+                        animate_start(())
+                    }}
+                >
                     <IconCopy size=20 {..} class="stroke-1.5 stroke-current"/>
                 </button>
                 <input
