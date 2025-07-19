@@ -48,19 +48,12 @@ fn InputField(
         )
     };
 
-    let copy = copy.then(|| {
+    let copy_cursor = move || {
+        if copy { "pointer" } else { "text" }
+    };
+    let copy_icon = copy.then(|| {
         view! {
-            <button
-                type="button"
-                on:mousedown=sig! { ev => ev.prevent_default() }
-                on:click=sig! { _ => {
-                    animate_set.set(true);
-                    toast_dispatch();
-                    animate_start(())
-                }}
-            >
-                <IconCopy size=24 {..} class="stroke-1.5 stroke-current"/>
-            </button>
+            <IconCopy size=24 {..} class="stroke-1.5 stroke-current"/>
         }
     });
 
@@ -76,38 +69,49 @@ fn InputField(
             class=(["mt-0.5"], sig! { !animate.get() })
             class=(["pb-0.5", "mt-0"], sig! { animate.get() })
         >
-            <div class="
-                flex flex-row justify-start gap-1.5
-                bg-white rounded-md
-                p-1.5
-            ">
-                { copy }
-                <input
-                    node_ref=node_ref
-                    on:keypress=sig! { ev => {
-                        let key = ev.key();
-                        if key.len() == 1 {
-                            let c = key.chars().next().expect("Checked above");
-                            if !text_validate(c) {
-                                ev.prevent_default();
-                            }
+            <div class="bg-white rounded-md p-1.5">
+                <button
+                    type="button"
+                    on:mousedown=sig! { ev => if copy { ev.prevent_default() }}
+                    on:click=sig! { _ => {
+                        if copy {
+                            animate_set.set(true);
+                            toast_dispatch();
+                            animate_start(());
                         }
                     }}
-                    on:input:target=sig! { ev => text_update(ev.target().value()) }
-                    on:focus=sig! { _ =>  if let Some(element) = node_ref.get_untracked() {
-                        element.select();
-                        let _ = element.set_selection_direction(Some("backward"));
-                        let _ = element.set_selection_start(Some(text_prefix_len));
-                        let _ = element.set_selection_end(Some(text().len() as u32));
-                    }}
-                    type="text"
-                    prop:value=text
-                    class="
-                        truncate
-                        focus:outline-none
-                        grow
-                    "
-                />
+                    class="flex flex-row justify-start gap-1.5"
+                    style:cursor=copy_cursor
+                >
+                    { copy_icon }
+                    <input
+                        node_ref=node_ref
+                        on:keypress=sig! { ev => {
+                            let key = ev.key();
+                            if key.len() == 1 {
+                                let c = key.chars().next().expect("Checked above");
+                                if !text_validate(c) {
+                                    ev.prevent_default();
+                                }
+                            }
+                        }}
+                        on:input:target=sig! { ev => text_update(ev.target().value()) }
+                        on:focus=sig! { _ =>  if let Some(element) = node_ref.get_untracked() {
+                            element.select();
+                            let _ = element.set_selection_direction(Some("backward"));
+                            let _ = element.set_selection_start(Some(text_prefix_len));
+                            let _ = element.set_selection_end(Some(text().len() as u32));
+                        }}
+                        type="text"
+                        prop:value=text
+                        class="
+                            truncate
+                            focus:outline-none
+                            grow
+                        "
+                        style:cursor=copy_cursor
+                    />
+                </button>
             </div>
         </form>
     }
