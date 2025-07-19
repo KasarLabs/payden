@@ -5,7 +5,7 @@ use thaw::*;
 use crate::{IconCopy, sig, toast_copy::ToastCopy};
 
 #[component]
-pub fn InputField(
+fn InputField(
     text: impl Fn() -> String + Send + Sync + Copy + 'static,
     text_update: impl Fn(String) + Send + Sync + Copy + 'static,
     text_validate: impl Fn(char) -> bool + Send + Sync + Copy + 'static,
@@ -39,7 +39,7 @@ pub fn InputField(
         toaster.dispatch_toast(
             sig! {
                 view! {
-                    <ToastCopy text={address_short}/>
+                    <ToastCopy text=address_short/>
                 }
             },
             ToastOptions::default()
@@ -81,7 +81,7 @@ pub fn InputField(
                 bg-white rounded-md
                 p-1.5
             ">
-                {copy}
+                { copy }
                 <input
                     node_ref=node_ref
                     on:keypress=sig! { ev => {
@@ -101,7 +101,7 @@ pub fn InputField(
                         let _ = element.set_selection_end(Some(text().len() as u32));
                     }}
                     type="text"
-                    prop:value=sig! { text() }
+                    prop:value=text
                     class="
                         truncate
                         focus:outline-none
@@ -110,5 +110,60 @@ pub fn InputField(
                 />
             </div>
         </form>
+    }
+}
+
+#[component]
+pub fn InputFieldMoney(
+    amount: impl Fn() -> String + Send + Sync + Copy + 'static,
+    amount_update: impl Fn(String) + Send + Sync + Copy + 'static,
+) -> impl IntoView {
+    let text_update = move |text_new: String| match text_new.len() {
+        0..=1 => {
+            amount_update("$0".to_string());
+        }
+        3 if text_new.starts_with("$0") && text_new.chars().nth(2).unwrap_or_default() != '.' => {
+            amount_update(format!("${}", &text_new[2..]));
+        }
+        _ => {
+            amount_update(text_new);
+        }
+    };
+
+    let text_validate = move |c: char| c.is_ascii_digit() || (c == '.' && !amount().contains("."));
+
+    view! {
+        <InputField
+            text=amount
+            text_update=text_update
+            text_validate=text_validate
+            text_prefix_len=1
+        />
+    }
+}
+
+#[component]
+pub fn InputFieldAddress(
+    address: impl Fn() -> String + Send + Sync + Copy + 'static,
+    address_update: impl Fn(String) + Send + Sync + Copy + 'static,
+) -> impl IntoView {
+    let text_update = move |text: String| {
+        if text.len() < 2 {
+            address_update("0x".to_string());
+        } else if text.len() <= 42 {
+            address_update(text);
+        }
+    };
+
+    let text_validate = move |c: char| c.is_ascii_hexdigit();
+
+    view! {
+        <InputField
+            text=address
+            text_update=text_update
+            text_validate=text_validate
+            text_prefix_len=2
+            copy=true
+        />
     }
 }

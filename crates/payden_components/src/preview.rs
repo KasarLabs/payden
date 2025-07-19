@@ -82,39 +82,13 @@ fn main() {
     mount::mount_to_body(sig! {
         view! {
             <Preview class="flex flex-col gap-4 m-auto border-1 border-red-600">
-                <InputField
-                    text=sig! { model.addres().get() }
-                    text_update=sig! { text => model.addres().update(|address| {
-                        if text.len() < 2 {
-                            *address = "0x".to_string();
-                        } else if text.len() <= 42 {
-                            *address = text;
-                        }
-                    }) }
-                    text_validate=sig! { c => c.is_ascii_hexdigit() }
-                    text_prefix_len=2
-                    copy=true
+                <InputFieldAddress
+                    address=sig! { model.addres().get() }
+                    address_update=sig! { address_new => model.addres().update(|address| *address = address_new) }
                 />
-                <InputField
-                    text=sig! { model.send_amount().get() }
-                    text_update=sig! { text => model.send_amount().update(|amount| {
-                        match text.len() {
-                            0..=1 => {
-                                *amount = "$0".to_string();
-                            },
-                            3 if text.starts_with("$0") && text.chars().nth(2).unwrap_or_default() != '.' => {
-                                *amount = format!("${}", &text[2..]);
-                            },
-                            _ => {
-
-                                *amount = text;
-                            }
-                        }
-                    })}
-                    text_validate=sig! { c => {
-                        c.is_ascii_digit() || (c == '.' && !model.send_amount().read().contains("."))
-                    }}
-                    text_prefix_len=1
+                <InputFieldMoney
+                    amount=sig! { model.send_amount().get() }
+                    amount_update=sig! { amount_new => model.send_amount().update(|amount| *amount = amount_new )}
                 />
             </Preview>
         }
