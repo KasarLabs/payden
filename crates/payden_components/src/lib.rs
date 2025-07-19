@@ -6,6 +6,7 @@ mod header;
 mod icons;
 mod input_dropdown;
 mod input_field;
+mod toast_copy;
 mod utils;
 
 pub use balance::*;

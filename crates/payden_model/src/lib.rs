@@ -1,9 +1,10 @@
 use reactive_stores::Store;
 
-#[derive(PartialEq, Eq, Default, Debug, Store)]
+#[derive(PartialEq, Default, Debug, Store)]
 pub struct Model {
     page: Page,
     addres: String,
+    send_amount: String,
 }
 
 #[derive(PartialEq, Eq, Default, Debug, Clone)]

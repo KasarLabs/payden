@@ -76,11 +76,13 @@ fn main() {
         .addres()
         .set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
 
+    model.send_amount().set("$0.000000".to_string());
+
     #[cfg(feature = "input_text")]
     mount::mount_to_body(sig! {
         view! {
-            <Preview class="flex flex-row m-auto border-1 border-red-600">
-                <InputText
+            <Preview class="flex flex-col gap-4 m-auto border-1 border-red-600">
+                <InputField
                     text=sig! { model.addres().get() }
                     text_update=sig! { text => model.addres().update(|address| {
                         if text.len() < 2 {
@@ -90,6 +92,29 @@ fn main() {
                         }
                     }) }
                     text_validate=sig! { c => c.is_ascii_hexdigit() }
+                    text_prefix_len=2
+                    copy=true
+                />
+                <InputField
+                    text=sig! { model.send_amount().get() }
+                    text_update=sig! { text => model.send_amount().update(|amount| {
+                        match text.len() {
+                            0..=1 => {
+                                *amount = "$0".to_string();
+                            },
+                            3 if text.starts_with("$0") && text.chars().nth(2).unwrap_or_default() != '.' => {
+                                *amount = format!("${}", &text[2..]);
+                            },
+                            _ => {
+
+                                *amount = text;
+                            }
+                        }
+                    })}
+                    text_validate=sig! { c => {
+                        c.is_ascii_digit() || (c == '.' && !model.send_amount().read().contains("."))
+                    }}
+                    text_prefix_len=1
                 />
             </Preview>
         }
