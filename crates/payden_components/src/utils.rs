@@ -1,5 +1,6 @@
 use leptos::prelude::*;
 use leptos_meta::*;
+use thaw::ConfigProvider;
 
 #[macro_export]
 macro_rules! sig {
@@ -13,14 +14,16 @@ pub fn Preview(class: &'static str, children: Children) -> impl IntoView {
     provide_meta_context();
 
     view! {
-        <Stylesheet id="leptos" href="/style/output.css"/>
-        <Link rel="shortcut icon" type_="image/ico" href="/favicon.ico"/>
-        <main>
-            <div class="flex flex-col min-h-screen">
-                <div class={class}>
-                    { children() }
+        <ConfigProvider>
+            <Stylesheet id="leptos" href="/style/output.css"/>
+            <Link rel="shortcut icon" type_="image/ico" href="/favicon.ico"/>
+            <main>
+                <div class="flex flex-col min-h-screen">
+                    <div class={class}>
+                        { children() }
+                    </div>
                 </div>
-            </div>
-        </main>
+            </main>
+        </ConfigProvider>
     }
 }

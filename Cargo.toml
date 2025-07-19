@@ -13,11 +13,12 @@ edition = "2024"
 
 [workspace.dependencies]
 # Leptos
-leptos = { version = "0.8.3", features = ["csr", "nightly"] }
-leptos_router = { version = "0.8.3" }
-leptos_meta = { version = "0.8.3" }
+leptos = { version = "0.7.7", features = ["csr"] }
+leptos_router = { version = "0.7.7" }
+leptos_meta = { version = "0.7.7" }
 leptos-use = { version = "0.16.2" }
-reactive_stores = { version = "0.2.3" }
+reactive_stores = { version = "0.1.7" }
+thaw = { version = "0.4.7", features = ["csr"] }
 
 # Payden
 payden_components = { path = "crates/payden_components" }
