@@ -21,6 +21,10 @@ leptos.workspace = true
 leptos_router.workspace = true
 leptos_meta.workspace = true
 leptos-use.workspace = true
+reactive_stores.workspace = true
+
+# Payden
+payden_model.workspace = true
 
 gloo-net.workspace = true
 console_error_panic_hook.workspace = true

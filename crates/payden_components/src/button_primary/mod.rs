@@ -1,30 +1,31 @@
-use leptos::prelude::*;
+use leptos::{logging, prelude::*};
 use leptos_use::*;
 
 #[component]
-pub fn ButtonPrimary(
-    on_press: impl Fn() + Send + Sync + 'static,
+pub fn ButtonSwitch(
+    on_press: impl Fn() + Send + Sync + Copy + 'static,
+    active: impl Fn() -> bool + Send + Sync + Copy + 'static,
     children: Children,
 ) -> impl IntoView {
     const ANIMATION_DURATION: f64 = 150.0;
 
-    let (pressed, set_pressed) = signal(false);
-    let (active, set_active) = signal(false);
+    let (animate, animate_set) = signal(false);
     let UseTimeoutFnReturn {
-        start: start_pressed,
+        start: animate_start,
         ..
     } = use_timeout_fn(
         move |_: ()| {
-            set_pressed.set(false);
-            set_active.set(true);
+            animate_set.set(false);
         },
-        ANIMATION_DURATION,
+        ANIMATION_DURATION + 50.0,
     );
 
     let on_click = move |_| {
-        on_press();
-        set_pressed.set(true);
-        start_pressed(());
+        if !active() {
+            on_press();
+            animate_set.set(true);
+            animate_start(());
+        }
     };
 
     view! {
@@ -37,13 +38,18 @@ pub fn ButtonPrimary(
                 border-current border-1
                 transition-all duration-{ANIMATION_DURATION}
             "
-            class=([ "pb-0.5", "mb-0.5"], move || { pressed.get() })
-            class=([ "hover:pb-1", "hover:mb-1" ], move || { !pressed.get() && !active.get() })
-            class=([ "text-slate-500" ], move || { !active.get() })
-            class=([ "text-(--miden-branding)" ,"pb-1", "mb-1" ], move || { active.get() })
+            // Initial state
+            class=([ "text-slate-500", "mt-1.5" ], move || !active())
+            // Animation part 1 -hover
+            class=([ "hover:pb-0.5", "hover:mt-0.5" ], move || !animate.get() && !active())
+            // Animation part 2 -pressed
+            class=([ "text-orange-500", "mt-1.5" ], move || animate.get() && active())
+            // Animation part 3 -released
+            class=([ "text-(--miden-branding)", "pb-1.5", "mt-0" ], move || !animate.get() && active())
         >
             <div class="
                 bg-white rounded-md
+                grow
                 flex flex-col justify-center
                 px-14 p-1.5
             ">
