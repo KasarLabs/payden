@@ -1375,17 +1375,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8c04f5d74368e4d0dfe06c45c8627c81bd7c317d52762d118fb9b3076f6420fd"
 
 [[package]]
-name = "page"
-version = "0.1.0"
-dependencies = [
- "console_error_panic_hook",
- "gloo-net",
- "leptos 0.7.8",
- "leptos_meta",
- "leptos_router",
-]
-
-[[package]]
 name = "palette"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1451,7 +1440,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "df94ce210e5bc13cb6651479fa48d14f601d9858cfe0467f43ae157023b938d3"
 
 [[package]]
-name = "payden_components"
+name = "payden"
 version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",

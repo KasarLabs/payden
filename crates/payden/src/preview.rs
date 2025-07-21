@@ -1,20 +1,22 @@
-mod utils;
-
 use leptos::prelude::*;
-use leptos::{logging, mount};
-use payden_components::*;
+
+use crate::sig;
+use crate::utils::*;
+use leptos::logging;
+use payden::*;
 use payden_model::*;
 use reactive_stores::Store;
-use utils::*;
 
-fn main() {
-    console_error_panic_hook::set_once();
-    logging::log!("csr mode - mounting to body");
-
+#[component]
+pub fn App() -> impl IntoView {
     let model = Store::new(Model::default());
+    model
+        .address()
+        .set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
 
-    #[cfg(feature = "icons")]
-    mount::mount_to_body(sig! {
+    model.send_amount().set("$0.000000".to_string());
+
+    if cfg!(feature = "icons") {
         view! {
             <Preview class="flex flex-col m-auto border-1 border-red-600">
                 <div class="flex flex row m-8 gap-8">
@@ -37,16 +39,7 @@ fn main() {
                 </div>
             </Preview>
         }
-    });
-
-    model
-        .address()
-        .set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
-
-    model.send_amount().set("$0.000000".to_string());
-
-    #[cfg(feature = "components")]
-    mount::mount_to_body(sig! {
+    } else if cfg!(feature = "components") {
         view! {
             <Preview class="m-auto bg-orange-50">
                 <Card>
@@ -85,10 +78,7 @@ fn main() {
                 </Card>
             </Preview>
         }
-    });
-
-    #[cfg(feature = "banners")]
-    mount::mount_to_body(sig! {
+    } else if cfg!(feature = "banners") {
         view! {
             <Preview  class="
                 flex flex-col justify-between
@@ -100,17 +90,23 @@ fn main() {
                 <Footer/>
             </Preview>
         }
-    });
-
-    #[cfg(feature = "qr")]
-    mount::mount_to_body(sig! {
+    } else if cfg!(feature = "qr") {
         view! {
             <Preview  class="
-                border-1 border-red-600
-                m-auto
-            ">
+                    border-1 border-red-600
+                    m-auto
+                ">
                 <QrCode data=sig!{ model.address().get() }/>
             </Preview>
         }
-    });
+    } else {
+        view! {
+            <Preview  class="
+                    border-1 border-red-600
+                    m-auto
+                ">
+                Preview
+            </Preview>
+        }
+    }
 }

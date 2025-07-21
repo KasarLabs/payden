@@ -1,11 +1,6 @@
 [workspace]
 resolver = "3"
-members = [
-  "crates/payden_controller",
-  "crates/payden_model",
-  "crates/payden_components",
-  "crates/page",
-]
+members = ["crates/payden_controller", "crates/payden_model", "crates/payden"]
 
 [workspace.package]
 version = "0.1.0"
@@ -21,7 +16,7 @@ reactive_stores = { version = "0.1.7" }
 thaw = { version = "0.4.7", features = ["csr"] }
 
 # Payden
-payden_components = { path = "crates/payden_components" }
+payden = { path = "crates" }
 payden_model = { path = "crates/payden_model" }
 
 gloo-net = { version = "0.6.0", features = ["http"] }

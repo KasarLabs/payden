@@ -1,17 +1,11 @@
 [package]
-name = "payden_components"
+name = "payden"
 version = "0.1.0"
 edition = "2024"
 
-[lib]
-path = "src/lib.rs"
-
-[[bin]]
-name = "preview"
-path = "src/preview.rs"
-
 [features]
 default = []
+preview = []
 icons = []
 components = []
 banners = []
