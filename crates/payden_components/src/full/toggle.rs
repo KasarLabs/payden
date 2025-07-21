@@ -4,7 +4,7 @@ use leptos_use::*;
 use crate::utils::Field;
 
 #[component]
-pub fn FullSwitch(
+pub fn FullToggle(
     on_press: impl Fn() + Field,
     active: impl Fn() -> bool + Field,
     children: Children,

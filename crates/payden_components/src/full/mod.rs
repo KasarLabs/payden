@@ -1,5 +1,5 @@
 mod button;
-mod switch;
+mod toggle;
 
 pub use button::*;
-pub use switch::*;
+pub use toggle::*;

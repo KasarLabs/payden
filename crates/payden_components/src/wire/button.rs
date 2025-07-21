@@ -35,11 +35,11 @@ pub fn WireButton(
             }}
             style:cursor="pointer"
             class="
-                font-body text-base text-black font-bold
+                flex flex-row
+                font-body text-base text-black
                 bg-current rounded-md
                 border-current border-1
                 transition-all duration-{ANIMATION_DURATION}
-                flex flex-row
             "
             class=(["mt-0.5"], sig! { !animate.get() })
             class=(["pb-0.5", "mt-0"], sig! { animate.get() })
@@ -96,7 +96,7 @@ pub fn WireButtonCopyAddress(
 
     view! {
         <WireButton text=address on_press=on_press>
-            <IconCopy size={ ICON_BASE } {..} class="stroke-[1.5] stroke-current"/>
+            <IconCopy size={ ICON_BASE } {..} class="stroke-1 stroke-current"/>
         </WireButton>
     }
 }

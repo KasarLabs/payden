@@ -15,12 +15,14 @@ fn WireField(
     view! {
         <form
             class="
-                font-body font-bold text-base text-black
+                font-body text-base text-black
                 bg-current rounded-md
                 border-current border-1
                 transition-all duration-{ANIMATION_DURATION}
                 mt-0.5
                 focus-within:pb-0.5 focus-within:mt-0
+                focus-within:font-bold
+                selection:bg-(--miden-branding) selection:text-white
             "
         >
             <div class="

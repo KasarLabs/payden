@@ -8,8 +8,7 @@ pub fn Balance(balance: impl Fn() -> f64 + Field) -> impl IntoView {
         <div class="
             text-black text-7xl
             font-body font-extrabold
-            border-1 border-red-600
-            px-2 py-4
+            px-2
         ">
             ${ sig! { format!("{:.2}", balance()) } }
         </div>
