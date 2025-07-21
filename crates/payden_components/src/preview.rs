@@ -107,4 +107,16 @@ fn main() {
             </Preview>
         }
     });
+
+    #[cfg(feature = "qr")]
+    mount::mount_to_body(sig! {
+        view! {
+            <Preview  class="
+                border-1 border-red-600
+                m-auto
+            ">
+                <QrCode data=sig!{ model.address().get() }/>
+            </Preview>
+        }
+    });
 }
