@@ -8,6 +8,7 @@ pub fn Header() -> impl IntoView {
     view! {
         <div class="
             flex flex-row justify-between items-center
+            w-screen
             py-4 px-8
         ">
             <LogoPayden/>

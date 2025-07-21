@@ -35,22 +35,22 @@ pub fn WireButton(
             }}
             style:cursor="pointer"
             class="
-                flex flex-row
+                flex flex-row grow
                 font-body text-base text-black
-                bg-current rounded-md
                 border-current border-1
+                bg-current rounded-md
                 transition-all duration-{ANIMATION_DURATION}
             "
             class=(["mt-0.5"], sig! { !animate.get() })
             class=(["pb-0.5", "mt-0"], sig! { animate.get() })
         >
             <div class="
-                flex flex-row justify-start gap-1.5 grow
+                flex flex-row gap-1.5 min-w-0
                 bg-white rounded-md 
                 px-2.5 py-1.5 
             ">
                 { children() }
-                { text }
+                <p class="truncate">{ sig! { text() }}</p>
             </div>
         </button>
     }

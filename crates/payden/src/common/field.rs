@@ -2,9 +2,8 @@ use leptos::prelude::*;
 
 use crate::{sig, utils::Field};
 
-// TODO: refactor components into twp types: full and wire
 #[component]
-fn WireField(
+fn InputField(
     text: impl Fn() -> String + Field,
     text_update: impl Fn(String) + Field,
     text_validate: impl Fn(char) -> bool + Field,
@@ -62,7 +61,7 @@ fn WireField(
 }
 
 #[component]
-pub fn WireFieldAmount(
+pub fn InputFieldAmount(
     amount: impl Fn() -> String + Field,
     amount_update: impl Fn(String) + Field,
 ) -> impl IntoView {
@@ -81,7 +80,7 @@ pub fn WireFieldAmount(
     let text_validate = move |c: char| c.is_ascii_digit() || (c == '.' && !amount().contains("."));
 
     view! {
-        <WireField
+        <InputField
             text=amount
             text_update=text_update
             text_validate=text_validate
@@ -91,7 +90,7 @@ pub fn WireFieldAmount(
 }
 
 #[component]
-pub fn WireFieldAddress(
+pub fn InputFieldAddress(
     address: impl Fn() -> String + Field,
     address_update: impl Fn(String) + Field,
 ) -> impl IntoView {
@@ -106,7 +105,7 @@ pub fn WireFieldAddress(
     let text_validate = move |c: char| c.is_ascii_hexdigit();
 
     view! {
-        <WireField
+        <InputField
             text=address
             text_update=text_update
             text_validate=text_validate

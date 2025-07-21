@@ -7,7 +7,8 @@ use private::*;
 pub fn Footer() -> impl IntoView {
     view! {
         <div class="
-            flex flex-row justify-between items-center
+            flex flex-row justify-between items-center mt-auto
+            w-screen
             py-4 px-8
             bg-white
         ">

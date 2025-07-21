@@ -47,7 +47,7 @@ pub fn ButtonFull(on_press: impl Fn() + Field, children: Children) -> impl IntoV
 }
 
 #[component]
-pub fn ButtonFullSend(on_press: impl Fn() + Field) -> impl IntoView {
+pub fn ButtonFullNotify(on_press: impl Fn() + Field, message: &'static str) -> impl IntoView {
     let toaster = ToasterInjection::expect_context();
     let toast_dispatch = move || {
         toaster.dismiss_all();
@@ -56,14 +56,14 @@ pub fn ButtonFullSend(on_press: impl Fn() + Field) -> impl IntoView {
                 view! {
                     <Toast>
                         <ToastTitle>
-                            Transaction Sent!
+                            { message }
                         </ToastTitle>
                     </Toast>
                 }
             },
             ToastOptions::default()
                 .with_intent(ToastIntent::Success)
-                .with_position(ToastPosition::Bottom),
+                .with_position(ToastPosition::Top),
         )
     };
 

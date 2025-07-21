@@ -2,6 +2,7 @@ mod app;
 mod common;
 mod constants;
 mod icons;
+mod page;
 mod preview;
 mod utils;
 

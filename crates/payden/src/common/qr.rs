@@ -8,12 +8,13 @@ pub fn QrCode(data: impl Fn() -> String + Field) -> impl IntoView {
             .unwrap()
             .render::<qrcode::render::svg::Color>()
             .min_dimensions(50, 50)
+            .quiet_zone(false)
             .build()
-            .replace("width=\"82\"", "")
-            .replace("height=\"82\"", "")
+            .replace("width=\"66\"", "")
+            .replace("height=\"66\"", "")
     };
 
     view! {
-        <div inner_html=sig! { qr() } class="size-100"/>
+        <div inner_html=sig! { qr() } class="min-x-50 min-y-50 p-8 grow"/>
     }
 }

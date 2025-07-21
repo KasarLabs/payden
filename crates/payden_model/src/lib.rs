@@ -5,7 +5,8 @@ pub struct Model {
     page: Page,
     address: String,
     balance: f64,
-    send_amount: String,
+    amount_send: String,
+    amount_faucet: String,
 }
 
 #[derive(PartialEq, Eq, Default, Debug, Clone)]

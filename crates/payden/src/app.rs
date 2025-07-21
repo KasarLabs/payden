@@ -1,10 +1,12 @@
 use leptos::prelude::*;
 use leptos_meta::*;
+use payden_model::*;
+use reactive_stores::Store;
 use thaw::{ConfigProvider, ToasterProvider};
 
 use crate::common::*;
-use crate::constants::*;
-use crate::icons::*;
+use crate::page::*;
+use crate::sig;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -13,12 +15,71 @@ pub fn App() -> impl IntoView {
             <ToasterProvider>
                 <Stylesheet id="leptos" href="/style/output.css"/>
                 <Link rel="shortcut icon" type_="image/ico" href="/favicon.ico"/>
-                <main>
-                    <div class="flex flex-col min-h-screen">
-                        <Header/>
-                    </div>
-                </main>
+                <Home/>
             </ToasterProvider>
         </ConfigProvider>
+    }
+}
+
+#[component]
+pub fn Home() -> impl IntoView {
+    let model = Store::new(Model::default());
+
+    // TODO: remove this
+    model
+        .address()
+        .set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
+    model.amount_send().set("$0.000000".to_string());
+    model.amount_faucet().set("$0.000000".to_string());
+
+    provide_context(model);
+
+    view! {
+        <main>
+            <div class="
+                flex flex-col items-center gap-4
+                min-h-screen
+                bg-orange-50
+            ">
+                <Header/>
+                <Wallet/>
+                <Footer/>
+            </div>
+        </main>
+    }
+}
+
+#[component]
+pub fn Wallet() -> impl IntoView {
+    let model = expect_context::<Store<Model>>();
+
+    view! {
+        <Card>
+            <div class="flex flex-col gap-4">
+                <Address address=sig! { model.address().get() }/>
+                <Balance balance=sig! {model.balance().get() }/>
+                <div class="grid grid-cols-2 gap-x-8 gap-y-4">
+                    <ButtonToggleSend
+                        on_press=sig! { model.page().set(Page::Send) }
+                        active=sig! { model.page().get() == Page::Send }
+                    />
+                    <ButtonToggleReceive
+                        on_press=sig! { model.page().set(Page::Receive) }
+                        active=sig! { model.page().get() == Page::Receive }
+                    />
+                    <ButtonToggleFaucet
+                        on_press=sig! { model.page().set(Page::Faucet) }
+                        active=sig! { model.page().get() == Page::Faucet }
+                    />
+                    <ButtonToggleActivity
+                        on_press=sig! { model.page().set(Page::Activity) }
+                        active=sig! { model.page().get() == Page::Activity }
+                    />
+                </div>
+                // <PageSend/>
+                // <PageReceive/>
+                <PageFaucet/>
+            </div>
+        </Card>
     }
 }

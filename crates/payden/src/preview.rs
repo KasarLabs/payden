@@ -14,7 +14,7 @@ pub fn App() -> impl IntoView {
         .address()
         .set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
 
-    model.send_amount().set("$0.000000".to_string());
+    model.amount_send().set("$0.000000".to_string());
 
     if cfg!(feature = "icons") {
         view! {
@@ -65,15 +65,18 @@ pub fn App() -> impl IntoView {
                             />
                         </div>
                         <WireButtonCopyAddress address=sig! { model.address().get() } on_press=sig! { logging::log!("Copy") }/>
-                        <WireFieldAddress
+                        <InputFieldAddress
                             address=sig! { model.address().get() }
                             address_update=sig! { address_new => model.address().update(|address| *address = address_new) }
                         />
-                        <WireFieldAmount
-                            amount=sig! { model.send_amount().get() }
-                            amount_update=sig! { amount_new => model.send_amount().update(|amount| *amount = amount_new )}
+                        <InputFieldAmount
+                            amount=sig! { model.amount_send().get() }
+                            amount_update=sig! { amount_new => model.amount_send().update(|amount| *amount = amount_new )}
                         />
-                        <ButtonFullSend on_press=sig! { logging::log!("Send") }/>
+                        <ButtonFullNotify
+                            on_press=sig! { logging::log!("Send") }
+                            message="Transaction Sent!"
+                        />
                     </div>
                 </Card>
             </Preview>
