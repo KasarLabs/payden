@@ -35,7 +35,7 @@ fn ButtonToggle(
             on:click=on_click
             class="
                 font-body text-xl font-extrabold
-                flex flex-col justify-start
+                flex flex-col justify-start grow
                 bg-current rounded-md
                 border-current border-1
                 transition-all duration-{ANIMATION_DURATION}
@@ -51,9 +51,8 @@ fn ButtonToggle(
         >
             <div class="
                 bg-white rounded-md
-                grow
-                flex flex-col justify-center
-                px-14 p-1.5
+                flex flex-col justify-center grow
+                p-1.5
             ">
                 {children()}
             </div>

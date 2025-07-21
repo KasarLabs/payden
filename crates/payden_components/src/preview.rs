@@ -53,7 +53,7 @@ fn main() {
                     <div class="flex flex-col gap-4 border-1 border-red-600">
                         <Address address=sig! { model.address().get() }/>
                         <Balance balance=sig! { model.balance().get() }/>
-                        <div class="grid grid-cols-2 m-auto gap-8 border-1 border-red-600 grow">
+                        <div class="grid grid-cols-2 grow gap-8 border-1 border-red-600 grow">
                             <ButtonToggleSend
                                 on_press=sig!{ model.page().set(Page::Send) }
                                 active=sig!{ model.page().get() == Page::Send }
