@@ -33,3 +33,4 @@ payden_model.workspace = true
 gloo-net.workspace = true
 console_error_panic_hook.workspace = true
 qrcode.workspace = true
+urlencoding.workspace = true

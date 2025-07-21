@@ -22,3 +22,4 @@ payden_model = { path = "crates/payden_model" }
 gloo-net = { version = "0.6.0", features = ["http"] }
 console_error_panic_hook = { version = "0.1.7" }
 qrcode = { version = "0.14.1" }
+urlencoding = { version = "2.1.3" }

@@ -68,10 +68,12 @@ pub fn App() -> impl IntoView {
                         <InputFieldAddress
                             address=sig! { model.address().get() }
                             address_update=sig! { address_new => model.address().update(|address| *address = address_new) }
+                            url_encode="r"
                         />
                         <InputFieldAmount
                             amount=sig! { model.amount_send().get() }
                             amount_update=sig! { amount_new => model.amount_send().update(|amount| *amount = amount_new )}
+                            url_encode="a"
                         />
                         <ButtonFullNotify
                             on_press=sig! { logging::log!("Send") }
