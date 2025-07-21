@@ -1,5 +1,9 @@
 mod address;
 mod balance;
+mod button_full;
+mod button_toggle;
+mod button_wire;
+mod field;
 mod footer;
 mod header;
 mod logos;
@@ -7,6 +11,10 @@ mod qr;
 
 pub use address::*;
 pub use balance::*;
+pub use button_full::*;
+pub use button_toggle::*;
+pub use button_wire::*;
+pub use field::*;
 pub use footer::*;
 pub use header::*;
 pub use logos::*;

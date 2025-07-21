@@ -5,7 +5,7 @@ use thaw::*;
 use crate::{sig, utils::Field};
 
 #[component]
-pub fn FullButton(on_press: impl Fn() + Field, children: Children) -> impl IntoView {
+pub fn ButtonFull(on_press: impl Fn() + Field, children: Children) -> impl IntoView {
     const ANIMATION_DURATION: f64 = 150.0;
 
     let (animate, animate_set) = signal(false);
@@ -47,7 +47,7 @@ pub fn FullButton(on_press: impl Fn() + Field, children: Children) -> impl IntoV
 }
 
 #[component]
-pub fn FullButtonSend(on_press: impl Fn() + Field) -> impl IntoView {
+pub fn ButtonFullSend(on_press: impl Fn() + Field) -> impl IntoView {
     let toaster = ToasterInjection::expect_context();
     let toast_dispatch = move || {
         toaster.dismiss_all();
@@ -73,8 +73,8 @@ pub fn FullButtonSend(on_press: impl Fn() + Field) -> impl IntoView {
     };
 
     view! {
-        <FullButton on_press=on_press>
+        <ButtonFull on_press=on_press>
             Send
-        </FullButton>
+        </ButtonFull>
     }
 }

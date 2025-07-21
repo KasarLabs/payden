@@ -52,19 +52,19 @@ fn main() {
                 <Address address=sig! { model.address().get() }/>
                 <Balance balance=sig! { model.balance().get() }/>
                 <div class="grid grid-cols-2 m-auto gap-8 border-1 border-red-600 grow">
-                    <FullToggleSend
+                    <ButtonToggleSend
                         on_press=sig!{ model.page().set(Page::Send) }
                         active=sig!{ model.page().get() == Page::Send }
                     />
-                    <FullToggleReceive
+                    <ButtonToggleReceive
                         on_press=sig!{ model.page().set(Page::Receive) }
                         active=sig!{ model.page().get() == Page::Receive }
                     />
-                    <FullToggleFaucet
+                    <ButtonToggleFaucet
                         on_press=sig!{ model.page().set(Page::Faucet) }
                         active=sig!{ model.page().get() == Page::Faucet }
                     />
-                    <FullToggleActivity
+                    <ButtonToggleActivity
                         on_press=sig!{ model.page().set(Page::Activity) }
                         active=sig!{ model.page().get() == Page::Activity }
                     />
@@ -78,7 +78,7 @@ fn main() {
                     amount=sig! { model.send_amount().get() }
                     amount_update=sig! { amount_new => model.send_amount().update(|amount| *amount = amount_new )}
                 />
-                <FullButtonSend on_press=sig! { logging::log!("Send") }/>
+                <ButtonFullSend on_press=sig! { logging::log!("Send") }/>
             </Preview>
         }
     });

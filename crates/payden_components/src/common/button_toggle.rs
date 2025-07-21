@@ -4,7 +4,7 @@ use leptos_use::*;
 use crate::{ICON_L, IconDrop, IconPulse, IconQr, IconSend, utils::Field};
 
 #[component]
-pub fn FullToggle(
+fn ButtonToggle(
     on_press: impl Fn() + Field,
     active: impl Fn() -> bool + Field,
     children: Children,
@@ -62,65 +62,65 @@ pub fn FullToggle(
 }
 
 #[component]
-pub fn FullToggleSend(
+pub fn ButtonToggleSend(
     on_press: impl Fn() + Field,
     active: impl Fn() -> bool + Field,
 ) -> impl IntoView {
     view! {
-        <FullToggle
+        <ButtonToggle
             on_press=on_press
             active=active
         >
             <IconSend size={ ICON_L } {..} class="fill-current m-auto"/>
             Send
-        </FullToggle>
+        </ButtonToggle>
     }
 }
 
 #[component]
-pub fn FullToggleReceive(
+pub fn ButtonToggleReceive(
     on_press: impl Fn() + Field,
     active: impl Fn() -> bool + Field,
 ) -> impl IntoView {
     view! {
-        <FullToggle
+        <ButtonToggle
             on_press=on_press
             active=active
         >
             <IconQr size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
             Receive
-        </FullToggle>
+        </ButtonToggle>
     }
 }
 
 #[component]
-pub fn FullToggleFaucet(
+pub fn ButtonToggleFaucet(
     on_press: impl Fn() + Field,
     active: impl Fn() -> bool + Field,
 ) -> impl IntoView {
     view! {
-        <FullToggle
+        <ButtonToggle
             on_press=on_press
             active=active
         >
             <IconDrop size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
             Faucet
-        </FullToggle>
+        </ButtonToggle>
     }
 }
 
 #[component]
-pub fn FullToggleActivity(
+pub fn ButtonToggleActivity(
     on_press: impl Fn() + Field,
     active: impl Fn() -> bool + Field,
 ) -> impl IntoView {
     view! {
-        <FullToggle
+        <ButtonToggle
             on_press=on_press
             active=active
         >
             <IconPulse size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
             Activity
-        </FullToggle>
+        </ButtonToggle>
     }
 }
