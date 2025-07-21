@@ -1,10 +1,12 @@
 use leptos::prelude::*;
 use leptos_use::*;
 
+use crate::utils::Field;
+
 #[component]
-pub fn ButtonSwitch(
-    on_press: impl Fn() + Send + Sync + Copy + 'static,
-    active: impl Fn() -> bool + Send + Sync + Copy + 'static,
+pub fn FullSwitch(
+    on_press: impl Fn() + Field,
+    active: impl Fn() -> bool + Field,
     children: Children,
 ) -> impl IntoView {
     const ANIMATION_DURATION: f64 = 150.0;
@@ -32,7 +34,7 @@ pub fn ButtonSwitch(
         <button
             on:click=on_click
             class="
-                font-body text-sm font-bold
+                font-body text-xl font-extrabold
                 flex flex-col justify-start
                 bg-current rounded-md
                 border-current border-1

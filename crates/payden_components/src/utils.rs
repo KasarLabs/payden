@@ -2,6 +2,9 @@ use leptos::prelude::*;
 use leptos_meta::*;
 use thaw::{ConfigProvider, ToasterProvider};
 
+pub trait Field: Send + Sync + Copy + 'static {}
+impl<T: Send + Sync + Copy + 'static> Field for T {}
+
 #[macro_export]
 macro_rules! sig {
     ($signal:expr) => {{ move || $signal }};
