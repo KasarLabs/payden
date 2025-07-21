@@ -21,19 +21,19 @@ fn main() {
                     <LogoPayden/> <LogoKasar/>
                 </div>
                 <div class="grid grid-cols-5 gap-8">
-                    <IconBook size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
-                    <IconClose size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
-                    <IconCopy size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
-                    <IconDrop size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
-                    <IconGithubCircle size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
-                    <IconGithub size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
+                    <IconBook size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
+                    <IconClose size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
+                    <IconCopy size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
+                    <IconDrop size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
+                    <IconGithubCircle size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
+                    <IconGithub size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
                     <IconMiden size={ ICON_XXL } {..} class="fill-(--miden-branding)"/>
-                    <IconPulse size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
-                    <IconQr size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
-                    <IconSend size={ ICON_XXL } {..} class="fill-black stroke-1.5"/>
-                    <IconSettings size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
-                    <IconTelegram size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
-                    <IconTwitter size={ ICON_XXL } {..} class="stroke-black stroke-1.5"/>
+                    <IconPulse size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
+                    <IconQr size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
+                    <IconSend size={ ICON_XXL } {..} class="fill-black stroke-[1.5]"/>
+                    <IconSettings size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
+                    <IconTelegram size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
+                    <IconTwitter size={ ICON_XXL } {..} class="stroke-black stroke-[1.5]"/>
                 </div>
             </Preview>
         }
@@ -49,33 +49,35 @@ fn main() {
     mount::mount_to_body(sig! {
         view! {
             <Preview class="flex flex-col gap-4 m-auto border-1 border-red-600">
+                <Address address=sig! { model.address().get() }/>
+                <Balance balance=sig! { model.balance().get() }/>
                 <div class="grid grid-cols-2 m-auto gap-8 border-1 border-red-600 grow">
                     <FullSwitch
                         on_press=sig!{ model.page().set(Page::Send) }
                         active=sig!{ model.page().get() == Page::Send }
                     >
-                        <IconSend size={ ICON_L } {..} class="stroke-current stroke-1.5 m-auto"/>
+                        <IconSend size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
                         Send
                     </FullSwitch>
                     <FullSwitch
                         on_press=sig!{ model.page().set(Page::Receive) }
                         active=sig!{ model.page().get() == Page::Receive }
                     >
-                        <IconQr size={ ICON_L } {..} class="stroke-current stroke-1.5 m-auto"/>
+                        <IconQr size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
                         Receive
                     </FullSwitch>
                     <FullSwitch
                         on_press=sig!{ model.page().set(Page::Faucet) }
                         active=sig!{ model.page().get() == Page::Faucet }
                     >
-                        <IconDrop size={ ICON_L } {..} class="stroke-current stroke-1.5 m-auto"/>
+                        <IconDrop size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
                         Faucet
                     </FullSwitch>
                     <FullSwitch
                         on_press=sig!{ model.page().set(Page::Activity) }
                         active=sig!{ model.page().get() == Page::Activity }
                     >
-                        <IconPulse size={ ICON_L } {..} class="stroke-current stroke-1.5 m-auto"/>
+                        <IconPulse size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
                         Activity
                     </FullSwitch>
                 </div>

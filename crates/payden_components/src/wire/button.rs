@@ -96,7 +96,7 @@ pub fn WireButtonCopyAddress(
 
     view! {
         <WireButton text=address on_press=on_press>
-            <IconCopy size={ ICON_BASE } {..} class="stroke-1.5 stroke-current"/>
+            <IconCopy size={ ICON_BASE } {..} class="stroke-[1.5] stroke-current"/>
         </WireButton>
     }
 }

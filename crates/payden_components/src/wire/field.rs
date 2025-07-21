@@ -15,7 +15,7 @@ fn WireField(
     view! {
         <form
             class="
-                font-body text-base text-black font-bold
+                font-body font-bold text-base text-black
                 bg-current rounded-md
                 border-current border-1
                 transition-all duration-{ANIMATION_DURATION}

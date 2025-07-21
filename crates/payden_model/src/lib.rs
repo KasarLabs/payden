@@ -4,6 +4,7 @@ use reactive_stores::Store;
 pub struct Model {
     page: Page,
     address: String,
+    balance: f64,
     send_amount: String,
 }
 
