@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 use leptos_use::*;
 
-use crate::utils::Field;
+use crate::{ICON_L, IconDrop, IconPulse, IconQr, IconSend, utils::Field};
 
 #[component]
 pub fn FullToggle(
@@ -58,5 +58,69 @@ pub fn FullToggle(
                 {children()}
             </div>
         </button>
+    }
+}
+
+#[component]
+pub fn FullToggleSend(
+    on_press: impl Fn() + Field,
+    active: impl Fn() -> bool + Field,
+) -> impl IntoView {
+    view! {
+        <FullToggle
+            on_press=on_press
+            active=active
+        >
+            <IconSend size={ ICON_L } {..} class="fill-current m-auto"/>
+            Send
+        </FullToggle>
+    }
+}
+
+#[component]
+pub fn FullToggleReceive(
+    on_press: impl Fn() + Field,
+    active: impl Fn() -> bool + Field,
+) -> impl IntoView {
+    view! {
+        <FullToggle
+            on_press=on_press
+            active=active
+        >
+            <IconQr size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
+            Receive
+        </FullToggle>
+    }
+}
+
+#[component]
+pub fn FullToggleFaucet(
+    on_press: impl Fn() + Field,
+    active: impl Fn() -> bool + Field,
+) -> impl IntoView {
+    view! {
+        <FullToggle
+            on_press=on_press
+            active=active
+        >
+            <IconDrop size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
+            Faucet
+        </FullToggle>
+    }
+}
+
+#[component]
+pub fn FullToggleActivity(
+    on_press: impl Fn() + Field,
+    active: impl Fn() -> bool + Field,
+) -> impl IntoView {
+    view! {
+        <FullToggle
+            on_press=on_press
+            active=active
+        >
+            <IconPulse size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
+            Activity
+        </FullToggle>
     }
 }

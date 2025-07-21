@@ -52,34 +52,22 @@ fn main() {
                 <Address address=sig! { model.address().get() }/>
                 <Balance balance=sig! { model.balance().get() }/>
                 <div class="grid grid-cols-2 m-auto gap-8 border-1 border-red-600 grow">
-                    <FullToggle
+                    <FullToggleSend
                         on_press=sig!{ model.page().set(Page::Send) }
                         active=sig!{ model.page().get() == Page::Send }
-                    >
-                        <IconSend size={ ICON_L } {..} class="fill-current m-auto"/>
-                        Send
-                    </FullToggle>
-                    <FullToggle
+                    />
+                    <FullToggleReceive
                         on_press=sig!{ model.page().set(Page::Receive) }
                         active=sig!{ model.page().get() == Page::Receive }
-                    >
-                        <IconQr size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
-                        Receive
-                    </FullToggle>
-                    <FullToggle
+                    />
+                    <FullToggleFaucet
                         on_press=sig!{ model.page().set(Page::Faucet) }
                         active=sig!{ model.page().get() == Page::Faucet }
-                    >
-                        <IconDrop size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
-                        Faucet
-                    </FullToggle>
-                    <FullToggle
+                    />
+                    <FullToggleActivity
                         on_press=sig!{ model.page().set(Page::Activity) }
                         active=sig!{ model.page().get() == Page::Activity }
-                    >
-                        <IconPulse size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
-                        Activity
-                    </FullToggle>
+                    />
                 </div>
                 <WireButtonCopyAddress address=sig! { model.address().get() } on_press=sig! { logging::log!("Copy") }/>
                 <WireFieldAddress
