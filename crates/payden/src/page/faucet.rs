@@ -20,6 +20,8 @@ pub fn PageFaucet() -> impl IntoView {
         <ButtonFullNotify
             on_press=sig! { logging::log!("Minting...") }
             message="Requested Funds!"
-        />
+        >
+            Deposit
+        </ButtonFullNotify>
     }
 }

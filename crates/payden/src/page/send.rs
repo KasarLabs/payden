@@ -13,8 +13,8 @@ pub fn PageSend() -> impl IntoView {
     view! {
         <InputTitle title="Recipient">
             <InputFieldAddress
-                address=sig! { model.address().get() }
-                address_update=sig! { address => model.address().set(address) }
+                address=sig! { model.address_send().get() }
+                address_update=sig! { address => model.address_send().set(address) }
             />
         </InputTitle>
         <InputTitle title="Amount">
@@ -26,6 +26,8 @@ pub fn PageSend() -> impl IntoView {
         <ButtonFullNotify
             on_press=sig! { logging::log!("Sending...") }
             message="Transaction Sent!"
-        />
+        >
+            Send
+        </ButtonFullNotify>
     }
 }

@@ -3,8 +3,9 @@ use reactive_stores::Store;
 #[derive(PartialEq, Default, Debug, Store)]
 pub struct Model {
     page: Page,
-    address: String,
     balance: f64,
+    address: String,
+    address_send: String,
     amount_send: String,
     amount_faucet: String,
 }

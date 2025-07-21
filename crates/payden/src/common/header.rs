@@ -11,7 +11,9 @@ pub fn Header() -> impl IntoView {
             w-screen
             py-4 px-8
         ">
-            <LogoPayden/>
+            <a href="/wallet/send">
+                <LogoPayden/>
+            </a>
             <div class="flex flex-row gap-8">
                 <LogoLink href="https://miden.xyz/">
                     <IconMiden size={ ICON_L } {..} class="fill-black"/>

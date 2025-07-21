@@ -1,7 +1,7 @@
 mod address;
 mod balance;
 mod button_full;
-mod button_toggle;
+mod button_navigate;
 mod button_wire;
 mod card;
 mod field;
@@ -14,7 +14,7 @@ mod title;
 pub use address::*;
 pub use balance::*;
 pub use button_full::*;
-pub use button_toggle::*;
+pub use button_navigate::*;
 pub use button_wire::*;
 pub use card::*;
 pub use field::*;

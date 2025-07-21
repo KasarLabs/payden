@@ -1,5 +1,7 @@
 use leptos::prelude::*;
 use leptos_meta::*;
+use leptos_router::components::*;
+use leptos_router::path;
 use payden_model::*;
 use reactive_stores::Store;
 use thaw::{ConfigProvider, ToasterProvider};
@@ -13,9 +15,11 @@ pub fn App() -> impl IntoView {
     view! {
         <ConfigProvider>
             <ToasterProvider>
-                <Stylesheet id="leptos" href="/style/output.css"/>
-                <Link rel="shortcut icon" type_="image/ico" href="/favicon.ico"/>
-                <Home/>
+                <Router>
+                    <Stylesheet id="leptos" href="/style/output.css"/>
+                    <Link rel="shortcut icon" type_="image/ico" href="/favicon.ico"/>
+                    <Home/>
+                </Router>
             </ToasterProvider>
         </ConfigProvider>
     }
@@ -29,6 +33,7 @@ pub fn Home() -> impl IntoView {
     model
         .address()
         .set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
+    model.address_send().set("0xdeadbeef".to_string());
     model.amount_send().set("$0.000000".to_string());
     model.amount_faucet().set("$0.000000".to_string());
 
@@ -42,7 +47,17 @@ pub fn Home() -> impl IntoView {
                 bg-orange-50
             ">
                 <Header/>
-                <Wallet/>
+                <Card>
+                    <Routes fallback=PageNotFound>
+                        <Route path=path!("") view=sig! { view! { <Redirect path="/wallet/send"/> }}/>
+                        <ParentRoute path=path!("/wallet") view=Wallet>
+                            <Route path=path!("") view=sig! { view! { <Redirect path="/wallet/send"/> }}/>
+                            <Route path=path!("/send") view=PageSend/>
+                            <Route path=path!("/receive") view=PageReceive/>
+                            <Route path=path!("/faucet") view=PageFaucet/>
+                        </ParentRoute>
+                    </Routes>
+                </Card>
                 <Footer/>
             </div>
         </main>
@@ -54,32 +69,28 @@ pub fn Wallet() -> impl IntoView {
     let model = expect_context::<Store<Model>>();
 
     view! {
-        <Card>
-            <div class="flex flex-col gap-4">
-                <Address address=sig! { model.address().get() }/>
-                <Balance balance=sig! {model.balance().get() }/>
-                <div class="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <ButtonToggleSend
-                        on_press=sig! { model.page().set(Page::Send) }
-                        active=sig! { model.page().get() == Page::Send }
-                    />
-                    <ButtonToggleReceive
-                        on_press=sig! { model.page().set(Page::Receive) }
-                        active=sig! { model.page().get() == Page::Receive }
-                    />
-                    <ButtonToggleFaucet
-                        on_press=sig! { model.page().set(Page::Faucet) }
-                        active=sig! { model.page().get() == Page::Faucet }
-                    />
-                    <ButtonToggleActivity
-                        on_press=sig! { model.page().set(Page::Activity) }
-                        active=sig! { model.page().get() == Page::Activity }
-                    />
-                </div>
-                // <PageSend/>
-                // <PageReceive/>
-                <PageFaucet/>
+        <div class="flex flex-col gap-4">
+            <Address address=sig! { model.address().get() }/>
+            <Balance balance=sig! {model.balance().get() }/>
+            <div class="grid grid-cols-2 gap-x-8 gap-y-4">
+                <ButtonNavigateSend
+                    on_press=sig! { model.page().set(Page::Send) }
+                    active=sig! { model.page().get() == Page::Send }
+                />
+                <ButtonNavigateReceive
+                    on_press=sig! { model.page().set(Page::Receive) }
+                    active=sig! { model.page().get() == Page::Receive }
+                />
+                <ButtonNavigateFaucet
+                    on_press=sig! { model.page().set(Page::Faucet) }
+                    active=sig! { model.page().get() == Page::Faucet }
+                />
+                <ButtonNavigateActivity
+                    on_press=sig! { model.page().set(Page::Activity) }
+                    active=sig! { model.page().get() == Page::Activity }
+                />
             </div>
-        </Card>
+            <Outlet/>
+        </div>
     }
 }

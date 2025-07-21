@@ -85,7 +85,7 @@ pub fn WireButtonCopyAddress(
             },
             ToastOptions::default()
                 .with_intent(ToastIntent::Success)
-                .with_position(ToastPosition::Bottom),
+                .with_position(ToastPosition::Top),
         )
     };
 

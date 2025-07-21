@@ -47,7 +47,11 @@ pub fn ButtonFull(on_press: impl Fn() + Field, children: Children) -> impl IntoV
 }
 
 #[component]
-pub fn ButtonFullNotify(on_press: impl Fn() + Field, message: &'static str) -> impl IntoView {
+pub fn ButtonFullNotify(
+    on_press: impl Fn() + Field,
+    message: &'static str,
+    children: Children,
+) -> impl IntoView {
     let toaster = ToasterInjection::expect_context();
     let toast_dispatch = move || {
         toaster.dismiss_all();
@@ -74,7 +78,7 @@ pub fn ButtonFullNotify(on_press: impl Fn() + Field, message: &'static str) -> i
 
     view! {
         <ButtonFull on_press=on_press>
-            Send
+            { children() }
         </ButtonFull>
     }
 }
