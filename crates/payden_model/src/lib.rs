@@ -3,7 +3,7 @@ use reactive_stores::Store;
 #[derive(PartialEq, Default, Debug, Store)]
 pub struct Model {
     page: Page,
-    addres: String,
+    address: String,
     send_amount: String,
 }
 

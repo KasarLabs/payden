@@ -12,9 +12,9 @@ path = "src/preview.rs"
 
 [features]
 default = []
-button_primary = []
 icons = []
-input_text = []
+components = []
+banners = []
 
 [dependencies]
 # Leptos
