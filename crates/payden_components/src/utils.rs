@@ -13,7 +13,7 @@ macro_rules! sig {
 }
 
 #[component]
-pub fn Preview(class: &'static str, children: Children) -> impl IntoView {
+pub fn Preview(#[prop(default = "")] class: &'static str, children: Children) -> impl IntoView {
     provide_meta_context();
 
     view! {

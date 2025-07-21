@@ -1,8 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Anonymous+Pro&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
 	--font-body: "Anonymous Pro", monospace;
+	--font-menu: "Crimson Text", serif;
 
 	--miden-branding: #FF5500;
 }

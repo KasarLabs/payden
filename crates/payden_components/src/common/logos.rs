@@ -26,6 +26,6 @@ pub fn LogoPayden() -> impl IntoView {
 #[component]
 pub fn LogoKasar() -> impl IntoView {
     view! {
-        <img src="https://raw.githubusercontent.com/KasarLabs/brand/refs/heads/main/kasar/logo/KasarBlackLogo.png" style="height:50px"/>
+        <img src="https://raw.githubusercontent.com/KasarLabs/brand/refs/heads/main/kasar/logo/KasarBlackLogo.png" style="height:30px"/>
     }
 }

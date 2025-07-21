@@ -96,8 +96,14 @@ fn main() {
     #[cfg(feature = "banners")]
     mount::mount_to_body(sig! {
         view! {
-            <Preview class="grid grid-cols-5 m-auto gap-8">
+            <Preview  class="
+                flex flex-col justify-between
+                border-1 border-red-600
+                bg-orange-50
+                h-screen
+            ">
                 <Header/>
+                <Footer/>
             </Preview>
         }
     });
