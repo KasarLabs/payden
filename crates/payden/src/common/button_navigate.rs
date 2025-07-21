@@ -41,6 +41,7 @@ fn ButtonNavigate(
                     bg-current rounded-md
                     border-current border-1
                     transition-all duration-{ANIMATION_DURATION}
+                    cursor-pointer
                 "
                 // Initial state
                 class=([ "text-slate-500", "mt-1.5" ], move || !active())

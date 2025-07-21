@@ -31,6 +31,7 @@ pub fn ButtonFull(on_press: impl Fn() + Field, children: Children) -> impl IntoV
                 bg-white rounded-md
                 border-1 border-black
                 transition-all duration-{ANIMATION_DURATION}
+                cursor-pointer
             "
             class=(["pb-0.5", "mt-0.5", "hover:pb-1", "hover:mt-0"], sig! { !animate.get() })
             class=(["pb-0", "mt-1"], sig! { animate.get() })

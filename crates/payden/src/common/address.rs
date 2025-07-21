@@ -46,6 +46,7 @@ pub fn Address(address: impl Fn() -> String + Field) -> impl IntoView {
                 font-body text-(--miden-branding) text-lg
                 bg-white rounded-md
                 p-1 pb-0
+                cursor-pointer
             "
         >
             <IconCopy size={ ICON_M } {..} class="stroke-1 stroke-current"/>
