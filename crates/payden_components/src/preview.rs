@@ -48,37 +48,41 @@ fn main() {
     #[cfg(feature = "components")]
     mount::mount_to_body(sig! {
         view! {
-            <Preview class="flex flex-col gap-4 m-auto border-1 border-red-600">
-                <Address address=sig! { model.address().get() }/>
-                <Balance balance=sig! { model.balance().get() }/>
-                <div class="grid grid-cols-2 m-auto gap-8 border-1 border-red-600 grow">
-                    <ButtonToggleSend
-                        on_press=sig!{ model.page().set(Page::Send) }
-                        active=sig!{ model.page().get() == Page::Send }
-                    />
-                    <ButtonToggleReceive
-                        on_press=sig!{ model.page().set(Page::Receive) }
-                        active=sig!{ model.page().get() == Page::Receive }
-                    />
-                    <ButtonToggleFaucet
-                        on_press=sig!{ model.page().set(Page::Faucet) }
-                        active=sig!{ model.page().get() == Page::Faucet }
-                    />
-                    <ButtonToggleActivity
-                        on_press=sig!{ model.page().set(Page::Activity) }
-                        active=sig!{ model.page().get() == Page::Activity }
-                    />
-                </div>
-                <WireButtonCopyAddress address=sig! { model.address().get() } on_press=sig! { logging::log!("Copy") }/>
-                <WireFieldAddress
-                    address=sig! { model.address().get() }
-                    address_update=sig! { address_new => model.address().update(|address| *address = address_new) }
-                />
-                <WireFieldAmount
-                    amount=sig! { model.send_amount().get() }
-                    amount_update=sig! { amount_new => model.send_amount().update(|amount| *amount = amount_new )}
-                />
-                <ButtonFullSend on_press=sig! { logging::log!("Send") }/>
+            <Preview class="m-auto bg-orange-50">
+                <Card>
+                    <div class="flex flex-col gap-4 border-1 border-red-600">
+                        <Address address=sig! { model.address().get() }/>
+                        <Balance balance=sig! { model.balance().get() }/>
+                        <div class="grid grid-cols-2 m-auto gap-8 border-1 border-red-600 grow">
+                            <ButtonToggleSend
+                                on_press=sig!{ model.page().set(Page::Send) }
+                                active=sig!{ model.page().get() == Page::Send }
+                            />
+                            <ButtonToggleReceive
+                                on_press=sig!{ model.page().set(Page::Receive) }
+                                active=sig!{ model.page().get() == Page::Receive }
+                            />
+                            <ButtonToggleFaucet
+                                on_press=sig!{ model.page().set(Page::Faucet) }
+                                active=sig!{ model.page().get() == Page::Faucet }
+                            />
+                            <ButtonToggleActivity
+                                on_press=sig!{ model.page().set(Page::Activity) }
+                                active=sig!{ model.page().get() == Page::Activity }
+                            />
+                        </div>
+                        <WireButtonCopyAddress address=sig! { model.address().get() } on_press=sig! { logging::log!("Copy") }/>
+                        <WireFieldAddress
+                            address=sig! { model.address().get() }
+                            address_update=sig! { address_new => model.address().update(|address| *address = address_new) }
+                        />
+                        <WireFieldAmount
+                            amount=sig! { model.send_amount().get() }
+                            amount_update=sig! { amount_new => model.send_amount().update(|amount| *amount = amount_new )}
+                        />
+                        <ButtonFullSend on_press=sig! { logging::log!("Send") }/>
+                    </div>
+                </Card>
             </Preview>
         }
     });
