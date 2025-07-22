@@ -4,3 +4,15 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+# Leptos
+reactive_stores.workspace = true
+
+# Payden
+payden_model.workspace = true
+
+# Miden
+miden-client.workspace = true
+miden-objects.workspace = true
+
+# Other
+getrandom.workspace = true

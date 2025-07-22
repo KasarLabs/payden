@@ -19,7 +19,20 @@ thaw = { version = "0.4.7", features = ["csr"] }
 payden = { path = "crates" }
 payden_model = { path = "crates/payden_model" }
 
+# Miden
+miden-client = { version = "0.10.0", default-features = false, features = [
+  "idxdb",
+  "web-tonic",
+] }
+miden-objects = { version = "0.10.0", default-features = false }
+
+# Random
+getrandom = { version = "0.3", default-features = false, features = [
+  "wasm_js",
+] }
+
+# Other
 gloo-net = { version = "0.6.0", features = ["http"] }
 console_error_panic_hook = { version = "0.1.7" }
-qrcode = { version = "0.14.1" }
+qrcode = { version = "0.14.1", default-features = false, features = ["svg"] }
 urlencoding = { version = "2.1.3" }
