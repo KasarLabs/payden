@@ -1,7 +1,9 @@
+use leptos::logging;
 use leptos::prelude::*;
 use leptos_meta::*;
 use leptos_router::components::*;
 use leptos_router::path;
+use payden::DEFAULT_ADDRESS;
 use payden_model::*;
 use reactive_stores::Store;
 use thaw::{ConfigProvider, ToasterProvider};
@@ -28,12 +30,8 @@ pub fn App() -> impl IntoView {
 
 #[component]
 pub fn Home() -> impl IntoView {
-    let model = Store::new(Model::default());
-
-    // TODO: remove this
-    model.address().set("84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
-
-    provide_context(model);
+    let controller = LocalResource::new(move || payden_controller::Controller::new());
+    provide_context::<Context>(controller);
 
     view! {
         <main>
@@ -62,31 +60,79 @@ pub fn Home() -> impl IntoView {
 
 #[component]
 pub fn Wallet() -> impl IntoView {
-    let model = expect_context::<Store<Model>>();
+    let context = expect_context::<Context>();
 
     view! {
         <div class="flex flex-col gap-4">
-            <Address address=sig! { model.address().get() }/>
-            <Balance balance=sig! {model.balance().get() }/>
-            <div class="grid grid-cols-2 gap-x-8 gap-y-4">
-                <ButtonNavigateSend
-                    on_press=sig! { model.page().set(Page::Send) }
-                    active=sig! { model.page().get() == Page::Send }
-                />
-                <ButtonNavigateReceive
-                    on_press=sig! { model.page().set(Page::Receive) }
-                    active=sig! { model.page().get() == Page::Receive }
-                />
-                <ButtonNavigateFaucet
-                    on_press=sig! { model.page().set(Page::Faucet) }
-                    active=sig! { model.page().get() == Page::Faucet }
-                />
-                <ButtonNavigateActivity
-                    on_press=sig! { model.page().set(Page::Activity) }
-                    active=sig! { model.page().get() == Page::Activity }
-                />
-            </div>
-            <Outlet/>
+            <Suspense fallback=sig! { view! { <p>"Loading..."</p> }}>
+                <Address address=sig! {
+                    context.read()
+                        .as_ref()
+                        .map(|controller| controller.model.address().get())
+                        .unwrap_or(DEFAULT_ADDRESS.to_string())
+                }/>
+                <Balance balance=sig! {
+                    context.read()
+                        .as_ref()
+                        .map(|controller| controller.model.balance().get())
+                        .unwrap_or_default()
+                }/>
+                <div class="grid grid-cols-2 gap-x-8 gap-y-4">
+                    <ButtonNavigateSend
+                        on_press=sig! {
+                            context.read()
+                                .as_ref()
+                                .map(|controller| controller.model.page().set(Page::Send));
+                        }
+                        active=sig! {
+                            context.read()
+                                .as_ref()
+                                .map(|controller| controller.model.page().get() == Page::Send)
+                                .unwrap_or(false)
+                        }
+                    />
+                    <ButtonNavigateReceive
+                        on_press=sig! {
+                            context.read()
+                                .as_ref()
+                                .map(|controller| controller.model.page().set(Page::Receive));
+                            }
+                        active=sig! {
+                            context.read()
+                                .as_ref()
+                                .map(|controller| controller.model.page().get() == Page::Receive)
+                                .unwrap_or(false)
+                        }
+                    />
+                    <ButtonNavigateFaucet
+                        on_press=sig! {
+                            context.read()
+                                .as_ref()
+                                .map(|controller| controller.model.page().set(Page::Faucet));
+                        }
+                        active=sig! {
+                            context.read()
+                                .as_ref()
+                                .map(|controller| controller.model.page().get() == Page::Faucet)
+                                .unwrap_or(false)
+                        }
+                    />
+                    <ButtonNavigateActivity
+                        on_press=sig! {
+                            context.read()
+                                .as_ref()
+                                .map(|controller| controller.model.page().set(Page::Activity));
+                            }
+                        active=sig! {
+                            context.read()
+                                .as_ref()
+                                .map(|controller| controller.model.page().get() == Page::Activity)
+                                .unwrap_or(false)
+                        }
+                    />
+                </div>
+                <Outlet/>
+            </Suspense>
         </div>
     }
 }
