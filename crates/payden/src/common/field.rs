@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 
-use crate::utils::Field;
+use crate::{REGEX_AMOUNT, REGEX_HEX, utils::Field};
 use private::*;
 
 #[component]
@@ -9,26 +9,12 @@ pub fn InputFieldAmount(
     amount_update: impl Fn(String) + Field,
     url_encode: &'static str,
 ) -> impl IntoView {
-    let text_update = move |text_new: String| match text_new.len() {
-        0..=1 => {
-            amount_update("$0".to_string());
-        }
-        3 if text_new.starts_with("$0") && text_new.chars().nth(2).unwrap_or_default() != '.' => {
-            amount_update(format!("${}", &text_new[2..]));
-        }
-        _ => {
-            amount_update(text_new);
-        }
-    };
-
-    let text_validate = move |c: char| c.is_ascii_digit() || (c == '.' && !amount().contains("."));
-
     view! {
         <InputField
             text=amount
-            text_update=text_update
-            text_validate=text_validate
-            text_prefix_len=1
+            text_update=amount_update
+            text_prefix="$"
+            text_pattern=REGEX_AMOUNT
             url_encode=url_encode
         />
     }
@@ -40,22 +26,12 @@ pub fn InputFieldAddress(
     address_update: impl Fn(String) + Field,
     url_encode: &'static str,
 ) -> impl IntoView {
-    let text_update = move |text: String| {
-        if text.len() < 2 {
-            address_update("0x".to_string());
-        } else if text.len() <= 42 {
-            address_update(text);
-        }
-    };
-
-    let text_validate = move |c: char| c.is_ascii_hexdigit();
-
     view! {
         <InputField
             text=address
-            text_update=text_update
-            text_validate=text_validate
-            text_prefix_len=2
+            text_update=address_update
+            text_prefix="0x"
+            text_pattern=REGEX_HEX
             url_encode=url_encode
         />
     }
@@ -70,8 +46,8 @@ mod private {
     pub fn InputField(
         text: impl Fn() -> String + Field,
         text_update: impl Fn(String) + Field,
-        text_validate: impl Fn(char) -> bool + Field,
-        text_prefix_len: u32,
+        text_prefix: &'static str,
+        text_pattern: &'static str,
         url_encode: &'static str,
     ) -> impl IntoView {
         let node_ref = NodeRef::new();
@@ -88,33 +64,24 @@ mod private {
                 selection:bg-(--miden-branding) selection:text-white
             ">
                 <div class="
-                flex flex-row justify-start gap-1.5
+                flex flex-row justify-start
                 bg-white rounded-md 
                 px-2.5 py-1.5
             ">
+                    <span>{ text_prefix }</span>
                     <input
                         node_ref=node_ref
-                        on:keypress=sig! { ev => {
-                            let key = ev.key();
-                            if key.len() == 1 {
-                                let c = key.chars().next().expect("Checked above");
-                                if !text_validate(c) {
-                                   ev.prevent_default();
-                                }
-                            }
-                        }}
                         on:input:target=sig! { ev => text_update(ev.target().value()) }
                         on:focus=sig! { _ =>  if let Some(element) = node_ref.get_untracked() {
                             element.select();
-                            let _ = element.set_selection_direction(Some("backward"));
-                            let _ = element.set_selection_start(Some(text_prefix_len));
-                            let _ = element.set_selection_end(Some(text().len() as u32));
                         }}
                         type="text"
                         name=url_encode
                         autocomplete="off"
-                        prop:value=text
+                        pattern={text_pattern}
                         oninput="this.form.requestSubmit()"
+                        required=true
+                        prop:value=text
                         class="
                             truncate
                             focus:outline-none

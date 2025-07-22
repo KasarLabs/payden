@@ -1,6 +1,7 @@
 use leptos::prelude::*;
 use leptos_use::*;
 
+use crate::constants::*;
 use crate::{ICON_L, IconDrop, IconPulse, IconQr, IconSend, utils::Field};
 
 #[component]
@@ -73,7 +74,7 @@ pub fn ButtonNavigateSend(
         <ButtonNavigate
             on_press=on_press
             active=active
-            destination="/wallet/send"
+            destination=PATH_SEND
         >
             <IconSend size={ ICON_L } {..} class="fill-current m-auto"/>
             Send
@@ -90,7 +91,7 @@ pub fn ButtonNavigateReceive(
         <ButtonNavigate
             on_press=on_press
             active=active
-            destination="/wallet/receive"
+            destination=PATH_RECEIVE
         >
             <IconQr size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
             Receive
@@ -107,7 +108,7 @@ pub fn ButtonNavigateFaucet(
         <ButtonNavigate
             on_press=on_press
             active=active
-            destination="/wallet/faucet"
+            destination=PATH_FAUCET
         >
             <IconDrop size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
             Faucet
@@ -124,7 +125,7 @@ pub fn ButtonNavigateActivity(
         <ButtonNavigate
             on_press=on_press
             active=active
-            destination="/wallet/send"
+            destination=PATH_SEND
         >
             <IconPulse size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
             Activity

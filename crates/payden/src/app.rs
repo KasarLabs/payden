@@ -7,6 +7,7 @@ use reactive_stores::Store;
 use thaw::{ConfigProvider, ToasterProvider};
 
 use crate::common::*;
+use crate::constants::*;
 use crate::page::*;
 use crate::sig;
 
@@ -32,10 +33,7 @@ pub fn Home() -> impl IntoView {
     // TODO: remove this
     model
         .address()
-        .set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
-    model.address_send().set("0xdeadbeef".to_string());
-    model.amount_send().set("$0.000000".to_string());
-    model.amount_faucet().set("$0.000000".to_string());
+        .set("84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
 
     provide_context(model);
 
@@ -49,9 +47,9 @@ pub fn Home() -> impl IntoView {
                 <Header/>
                 <Card>
                     <Routes fallback=PageNotFound>
-                        <Route path=path!("") view=sig! { view! { <Redirect path="/wallet/send"/> }}/>
+                        <Route path=path!("") view=sig! { view! { <Redirect path=PATH_DEFAULT/> }}/>
                         <ParentRoute path=path!("/wallet") view=Wallet>
-                            <Route path=path!("") view=sig! { view! { <Redirect path="/wallet/send"/> }}/>
+                            <Route path=path!("") view=sig! { view! { <Redirect path=PATH_DEFAULT/> }}/>
                             <Route path=path!("/send") view=PageSend/>
                             <Route path=path!("/receive") view=PageReceive/>
                             <Route path=path!("/faucet") view=PageFaucet/>
