@@ -30,7 +30,7 @@ thaw.workspace = true
 # Payden
 payden_model.workspace = true
 
+# Other
 gloo-net.workspace = true
 console_error_panic_hook.workspace = true
 qrcode.workspace = true
-urlencoding.workspace = true
