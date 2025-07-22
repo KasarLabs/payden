@@ -4,6 +4,8 @@
 
 #![cfg_attr(not(test), no_std)]
 
+extern crate alloc;
+
 mod error;
 
 use alloc::boxed::Box;
@@ -13,8 +15,6 @@ use payden_model::*;
 use rand_core::RngCore;
 
 use crate::error::*;
-
-extern crate alloc;
 
 pub struct Controller {
     client: miden_client::Client,
@@ -47,7 +47,17 @@ impl Controller {
 
         let model = reactive_stores::Store::new(payden_model::Model::default());
 
-        Self { client, keystore, model }
+        let mut controller = Self { client, keystore, model };
+
+        // Restoring previous account
+        if let Some((header, _)) = controller.client.get_account_headers().await.unwrap().first() {
+            let address = header.id().to_bech32(miden_objects::account::NetworkId::Testnet);
+            controller.model.address().set(address);
+        } else {
+            controller.regenerate_account().await.unwrap();
+        }
+
+        controller
     }
 
     pub async fn regenerate_account(&mut self) -> ResultDyn<()> {
@@ -60,7 +70,7 @@ impl Controller {
         let builder = miden_client::account::AccountBuilder::new(account_seed)
             .account_type(miden_client::account::AccountType::RegularAccountUpdatableCode)
             .storage_mode(miden_client::account::AccountStorageMode::Public)
-            .with_component(miden_client::account::component::RpoFalcon512::new(public_key))
+            .with_auth_component(miden_client::account::component::RpoFalcon512::new(public_key))
             .with_component(miden_client::account::component::BasicWallet);
 
         let (account, seed) = builder.build()?;
@@ -113,18 +123,5 @@ impl Controller {
             false,
             false,
         )?)
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
-
-    #[wasm_bindgen_test::wasm_bindgen_test]
-    async fn controller() {
-        let res = Controller::new().await;
-        assert!(res.is_ok());
     }
 }

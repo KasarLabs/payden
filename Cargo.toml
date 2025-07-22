@@ -6,6 +6,15 @@ members = ["crates/payden_controller", "crates/payden_model", "crates/payden"]
 version = "0.1.0"
 edition = "2024"
 
+[profile.dev]
+opt-level = 3           # Maximum optimization
+debug = true            # Keep debug symbols
+debug-assertions = true # Keep debug assertions  
+overflow-checks = true  # Keep overflow checks
+lto = false             # Link-time optimization (slower compile)
+panic = "unwind"        # Keep unwinding for better debugging
+codegen-units = 256     # Parallel code generation (faster compile)
+
 [workspace.dependencies]
 # Leptos
 leptos = { version = "0.7.7", features = ["csr"] }

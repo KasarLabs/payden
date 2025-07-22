@@ -64,7 +64,7 @@ pub fn Wallet() -> impl IntoView {
 
     view! {
         <div class="flex flex-col gap-4">
-            <Suspense fallback=sig! { view! { <p>"Loading..."</p> }}>
+            <Suspense fallback=PageLoading>
                 <Address address=sig! {
                     context.read()
                         .as_ref()
