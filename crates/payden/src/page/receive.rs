@@ -9,9 +9,12 @@ use crate::sig;
 #[component]
 pub fn PageReceive() -> impl IntoView {
     let model = expect_context::<Store<Model>>();
+    model.page().set(Page::Receive);
 
     view! {
-        <QrCode data=sig! { model.address().get() }/>
+        <div class="flex flex-col grow items-center">
+            <QrCode data=sig! { model.address().get() }/>
+        </div>
         <InputTitle title="Address">
             <WireButtonCopyAddress
                 address=sig! { model.address().get() }

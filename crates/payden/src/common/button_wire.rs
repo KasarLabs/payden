@@ -45,7 +45,7 @@ pub fn WireButton(
             class=(["pb-0.5", "mt-0"], sig! { animate.get() })
         >
             <div class="
-                flex flex-row gap-1.5 min-w-0
+                flex flex-row gap-1.5 min-w-0 grow
                 bg-white rounded-md 
                 px-2.5 py-1.5 
             ">
