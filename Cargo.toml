@@ -20,7 +20,7 @@ codegen-units = 256     # Parallel code generation (faster compile)
 leptos = { version = "0.7.7", features = ["csr"] }
 leptos_router = { version = "0.7.7" }
 leptos_meta = { version = "0.7.7" }
-leptos-use = { version = "0.16.2" }
+leptos-use = { version = "0.15.10" }
 reactive_stores = { version = "0.1.7" }
 thaw = { version = "0.4.7", features = ["csr"] }
 

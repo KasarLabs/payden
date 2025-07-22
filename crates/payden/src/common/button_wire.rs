@@ -6,7 +6,11 @@ use crate::{ICON_BASE, IconCopy, sig, utils::Field};
 
 // TODO: refactor components into twp types: full and wire
 #[component]
-pub fn WireButton(text: impl Fn() -> String + Field, on_press: impl Fn() + Field, children: Children) -> impl IntoView {
+pub fn WireButton(
+    text: impl Fn() -> String + Field,
+    on_press: impl Fn() + Send + Sync + 'static,
+    children: Children,
+) -> impl IntoView {
     const ANIMATION_DURATION: f64 = 150.0;
 
     let (animate, animate_set) = signal(false);
@@ -28,7 +32,7 @@ pub fn WireButton(text: impl Fn() -> String + Field, on_press: impl Fn() + Field
             }}
             style:cursor="pointer"
             class="
-                flex flex-row grow
+                flex flex-row w-full
                 font-body text-base text-black
                 border-current border-1
                 bg-current rounded-md
@@ -77,13 +81,14 @@ pub fn WireButtonCopyAddress(address: impl Fn() -> String + Field, on_press: imp
         )
     };
 
-    let on_press = move || {
-        on_press();
-        toast_dispatch()
-    };
+    let UseClipboardReturn { copy, .. } = use_clipboard();
 
     view! {
-        <WireButton text=address on_press=on_press>
+        <WireButton text=address on_press=sig! {{
+            on_press();
+            copy(&address());
+            toast_dispatch();
+        }}>
             <IconCopy size={ ICON_BASE } {..} class="stroke-1 stroke-current"/>
         </WireButton>
     }

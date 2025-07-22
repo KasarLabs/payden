@@ -1,4 +1,5 @@
 use leptos::prelude::*;
+use leptos_use::*;
 use thaw::*;
 
 use crate::{ICON_M, IconCopy, sig, utils::Field};
@@ -36,9 +37,14 @@ pub fn Address(address: impl Fn() -> String + Field) -> impl IntoView {
         )
     };
 
+    let UseClipboardReturn { copy, .. } = use_clipboard();
+
     view! {
         <button
-            on:click=sig! { _ => toast_dispatch() }
+            on:click= sig!{ _ => {
+                copy(&address());
+                toast_dispatch();
+            }}
             class="
                 flex flex-row gap-2 items-center
                 font-body text-(--miden-branding) text-lg
