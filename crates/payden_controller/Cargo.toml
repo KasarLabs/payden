@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 # Leptos
+leptos.workspace = true
 reactive_stores.workspace = true
 
 # Payden
@@ -16,3 +17,9 @@ miden-objects.workspace = true
 
 # Other
 getrandom.workspace = true
+rand_core.workspace = true
+
+[dev-dependencies]
+futures.workspace = true
+wasm-bindgen-test.workspace = true
+wasm-bindgen.workspace = true

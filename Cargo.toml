@@ -18,6 +18,7 @@ thaw = { version = "0.4.7", features = ["csr"] }
 # Payden
 payden = { path = "crates" }
 payden_model = { path = "crates/payden_model" }
+payden_controller = { path = "crates/payden_controller" }
 
 # Miden
 miden-client = { version = "0.10.0", default-features = false, features = [
@@ -30,8 +31,16 @@ miden-objects = { version = "0.10.0", default-features = false }
 getrandom = { version = "0.3", default-features = false, features = [
   "wasm_js",
 ] }
+rand_core = { version = "0.9.3", default-features = false }
 
 # Other
 gloo-net = { version = "0.6.0", features = ["http"] }
 console_error_panic_hook = { version = "0.1.7" }
 qrcode = { version = "0.14.1", default-features = false, features = ["svg"] }
+
+# Testing
+futures = { version = "0.3.31", default-features = false, features = [
+  "executor",
+] }
+wasm-bindgen-test = { version = "0.3.50" }
+wasm-bindgen = { version = "0.2.100" }

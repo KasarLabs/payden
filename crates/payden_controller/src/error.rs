@@ -1,4 +1,4 @@
-pub(crate) type Result<T> = core::result::Result<T, alloc::boxed::Box<dyn core::error::Error>>;
+pub(crate) type ResultDyn<T> = core::result::Result<T, alloc::boxed::Box<dyn core::error::Error>>;
 
 #[derive(Debug)]
 pub(crate) struct WebStoreInitError;

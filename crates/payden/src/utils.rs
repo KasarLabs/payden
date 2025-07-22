@@ -8,6 +8,7 @@ impl<T: Send + Sync + Copy + 'static> Field for T {}
 #[macro_export]
 macro_rules! sig {
     ($signal:expr) => {{ move || $signal }};
+    ($signal:expr;) => {{ move || { $signal; } }};
     ($($param:tt),+ $(,)? => $signal:expr) => {{ move |$($param,)+| $signal }};
     (_ => $signal:expr) => {{ move |_| $signal }};
 }

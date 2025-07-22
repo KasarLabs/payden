@@ -29,6 +29,7 @@ thaw.workspace = true
 
 # Payden
 payden_model.workspace = true
+payden_controller.workspace = true
 
 # Other
 gloo-net.workspace = true

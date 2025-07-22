@@ -1,3 +1,7 @@
+extern crate alloc;
+
+use leptos::prelude::*;
+
 pub const ICON_BASE: u32 = 24;
 pub const ICON_M: u32 = 28;
 pub const ICON_L: u32 = 32;
@@ -13,3 +17,5 @@ pub const PATH_FAUCET: &str = "/wallet/faucet?a=0.000000";
 
 pub const DEFAULT_ADDRESS: &str = "deadbeef";
 pub const DEFAULT_AMOUNT: &str = "0.000000";
+
+pub type Context = LocalResource<payden_controller::Controller>;
