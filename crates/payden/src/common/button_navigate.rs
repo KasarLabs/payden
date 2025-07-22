@@ -14,10 +14,7 @@ fn ButtonNavigate(
     const ANIMATION_DURATION: f64 = 150.0;
 
     let (animate, animate_set) = signal(false);
-    let UseTimeoutFnReturn {
-        start: animate_start,
-        ..
-    } = use_timeout_fn(
+    let UseTimeoutFnReturn { start: animate_start, .. } = use_timeout_fn(
         move |_: ()| {
             animate_set.set(false);
         },
@@ -66,10 +63,7 @@ fn ButtonNavigate(
 }
 
 #[component]
-pub fn ButtonNavigateSend(
-    on_press: impl Fn() + Field,
-    active: impl Fn() -> bool + Field,
-) -> impl IntoView {
+pub fn ButtonNavigateSend(on_press: impl Fn() + Field, active: impl Fn() -> bool + Field) -> impl IntoView {
     view! {
         <ButtonNavigate
             on_press=on_press
@@ -83,10 +77,7 @@ pub fn ButtonNavigateSend(
 }
 
 #[component]
-pub fn ButtonNavigateReceive(
-    on_press: impl Fn() + Field,
-    active: impl Fn() -> bool + Field,
-) -> impl IntoView {
+pub fn ButtonNavigateReceive(on_press: impl Fn() + Field, active: impl Fn() -> bool + Field) -> impl IntoView {
     view! {
         <ButtonNavigate
             on_press=on_press
@@ -100,10 +91,7 @@ pub fn ButtonNavigateReceive(
 }
 
 #[component]
-pub fn ButtonNavigateFaucet(
-    on_press: impl Fn() + Field,
-    active: impl Fn() -> bool + Field,
-) -> impl IntoView {
+pub fn ButtonNavigateFaucet(on_press: impl Fn() + Field, active: impl Fn() -> bool + Field) -> impl IntoView {
     view! {
         <ButtonNavigate
             on_press=on_press
@@ -117,10 +105,7 @@ pub fn ButtonNavigateFaucet(
 }
 
 #[component]
-pub fn ButtonNavigateActivity(
-    on_press: impl Fn() + Field,
-    active: impl Fn() -> bool + Field,
-) -> impl IntoView {
+pub fn ButtonNavigateActivity(on_press: impl Fn() + Field, active: impl Fn() -> bool + Field) -> impl IntoView {
     view! {
         <ButtonNavigate
             on_press=on_press

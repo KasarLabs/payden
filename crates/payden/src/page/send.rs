@@ -23,22 +23,8 @@ pub fn PageSend() -> impl IntoView {
     model.page().set(Page::Send);
 
     let query = use_query::<QuerySend>();
-    let recipient = move || {
-        query
-            .read()
-            .as_ref()
-            .ok()
-            .and_then(|q| q.r.clone())
-            .unwrap_or(DEFAULT_ADDRESS.to_string())
-    };
-    let amount = move || {
-        query
-            .read()
-            .as_ref()
-            .ok()
-            .and_then(|q| q.a.clone())
-            .unwrap_or(DEFAULT_AMOUNT.to_string())
-    };
+    let recipient = move || query.read().as_ref().ok().and_then(|q| q.r.clone()).unwrap_or(DEFAULT_ADDRESS.to_string());
+    let amount = move || query.read().as_ref().ok().and_then(|q| q.a.clone()).unwrap_or(DEFAULT_AMOUNT.to_string());
 
     model.address_send().set(recipient());
     model.amount_send().set(amount());

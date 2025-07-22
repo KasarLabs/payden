@@ -32,9 +32,7 @@ pub fn Address(address: impl Fn() -> String + Field) -> impl IntoView {
                     </Toast>
                 }
             },
-            ToastOptions::default()
-                .with_intent(ToastIntent::Success)
-                .with_position(ToastPosition::Top),
+            ToastOptions::default().with_intent(ToastIntent::Success).with_position(ToastPosition::Top),
         )
     };
 

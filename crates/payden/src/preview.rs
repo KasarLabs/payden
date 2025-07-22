@@ -10,9 +10,7 @@ use reactive_stores::Store;
 #[component]
 pub fn App() -> impl IntoView {
     let model = Store::new(Model::default());
-    model
-        .address()
-        .set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
+    model.address().set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
 
     model.amount_send().set("$0.000000".to_string());
 

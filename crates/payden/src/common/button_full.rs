@@ -9,10 +9,7 @@ pub fn ButtonFull(on_press: impl Fn() + Field, children: Children) -> impl IntoV
     const ANIMATION_DURATION: f64 = 150.0;
 
     let (animate, animate_set) = signal(false);
-    let UseTimeoutFnReturn {
-        start: animate_start,
-        ..
-    } = use_timeout_fn(
+    let UseTimeoutFnReturn { start: animate_start, .. } = use_timeout_fn(
         move |_: ()| {
             animate_set.set(false);
         },
@@ -48,11 +45,7 @@ pub fn ButtonFull(on_press: impl Fn() + Field, children: Children) -> impl IntoV
 }
 
 #[component]
-pub fn ButtonFullNotify(
-    on_press: impl Fn() + Field,
-    message: &'static str,
-    children: Children,
-) -> impl IntoView {
+pub fn ButtonFullNotify(on_press: impl Fn() + Field, message: &'static str, children: Children) -> impl IntoView {
     let toaster = ToasterInjection::expect_context();
     let toast_dispatch = move || {
         toaster.dismiss_all();
@@ -66,9 +59,7 @@ pub fn ButtonFullNotify(
                     </Toast>
                 }
             },
-            ToastOptions::default()
-                .with_intent(ToastIntent::Success)
-                .with_position(ToastPosition::Top),
+            ToastOptions::default().with_intent(ToastIntent::Success).with_position(ToastPosition::Top),
         )
     };
 

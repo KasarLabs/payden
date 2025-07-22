@@ -31,9 +31,7 @@ pub fn Home() -> impl IntoView {
     let model = Store::new(Model::default());
 
     // TODO: remove this
-    model
-        .address()
-        .set("84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
+    model.address().set("84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
 
     provide_context(model);
 

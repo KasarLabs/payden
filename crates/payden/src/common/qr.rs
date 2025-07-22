@@ -15,9 +15,7 @@ pub fn QrCode(data: impl Fn() -> String + Field) -> impl IntoView {
         let stop = qr.rfind("</svg>").unwrap();
         let qr = &qr[start..stop];
 
-        format!(
-            r#"<svg viewbox="0, 0, 58, 58" fill="none" xmlns="http://www.w3.org/2000/svg">{qr}</svg>"#
-        )
+        format!(r#"<svg viewbox="0, 0, 58, 58" fill="none" xmlns="http://www.w3.org/2000/svg">{qr}</svg>"#)
     };
 
     view! {

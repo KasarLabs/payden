@@ -22,14 +22,7 @@ pub fn PageFaucet() -> impl IntoView {
     model.page().set(Page::Faucet);
 
     let query = use_query::<QuerySend>();
-    let amount = move || {
-        query
-            .read()
-            .as_ref()
-            .ok()
-            .and_then(|q| q.a.clone())
-            .unwrap_or(DEFAULT_AMOUNT.to_string())
-    };
+    let amount = move || query.read().as_ref().ok().and_then(|q| q.a.clone()).unwrap_or(DEFAULT_AMOUNT.to_string());
 
     model.amount_faucet().set(amount());
 

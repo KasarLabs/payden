@@ -6,18 +6,11 @@ use crate::{ICON_BASE, IconCopy, sig, utils::Field};
 
 // TODO: refactor components into twp types: full and wire
 #[component]
-pub fn WireButton(
-    text: impl Fn() -> String + Field,
-    on_press: impl Fn() + Field,
-    children: Children,
-) -> impl IntoView {
+pub fn WireButton(text: impl Fn() -> String + Field, on_press: impl Fn() + Field, children: Children) -> impl IntoView {
     const ANIMATION_DURATION: f64 = 150.0;
 
     let (animate, animate_set) = signal(false);
-    let UseTimeoutFnReturn {
-        start: animate_start,
-        ..
-    } = use_timeout_fn(
+    let UseTimeoutFnReturn { start: animate_start, .. } = use_timeout_fn(
         move |_: ()| {
             animate_set.set(false);
         },
@@ -57,10 +50,7 @@ pub fn WireButton(
 }
 
 #[component]
-pub fn WireButtonCopyAddress(
-    address: impl Fn() -> String + Field,
-    on_press: impl Fn() + Field,
-) -> impl IntoView {
+pub fn WireButtonCopyAddress(address: impl Fn() -> String + Field, on_press: impl Fn() + Field) -> impl IntoView {
     let address_short = move || {
         let start = address().chars().take(6).collect::<String>();
         let stop = address().chars().rev().take(4).collect::<String>();
@@ -83,9 +73,7 @@ pub fn WireButtonCopyAddress(
                     </Toast>
                 }
             },
-            ToastOptions::default()
-                .with_intent(ToastIntent::Success)
-                .with_position(ToastPosition::Top),
+            ToastOptions::default().with_intent(ToastIntent::Success).with_position(ToastPosition::Top),
         )
     };
 
