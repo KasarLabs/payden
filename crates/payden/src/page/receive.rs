@@ -23,7 +23,7 @@ pub fn PageReceive() -> impl IntoView {
                     .model.address().get()
             }/>
         </div>
-        <InputTitle title="Address">
+        <InputTitle title="Address" center=true>
             <WireButtonCopyAddress
                 address=sig! {
                     context.read()
