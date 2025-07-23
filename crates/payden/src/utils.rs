@@ -13,6 +13,14 @@ macro_rules! sig {
     (_ => $signal:expr) => {{ move |_| $signal }};
 }
 
+#[macro_export]
+macro_rules! sig_async {
+    ($signal:expr) => {{ move || Suspend::new(async move { $signal })}};
+    ($signal:expr;) => {{ move || { Suspend::new(async move { $signal }); } }};
+    ($($param:tt),+ $(,)? => $signal:expr) => {{ move |$($param,)+| Suspend::new(async move { $signal }) }};
+    (_ => $signal:expr) => {{ move |_| Suspend::new(async move { $signal }) }};
+}
+
 #[component]
 pub fn Preview(#[prop(default = "")] class: &'static str, children: Children) -> impl IntoView {
     provide_meta_context();

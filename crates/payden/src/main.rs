@@ -25,6 +25,8 @@ mod prelude {
     pub use crate::common::*;
     pub use crate::constants::*;
     pub use crate::icons::*;
+    pub use crate::page::*;
     pub use crate::sig;
+    pub use crate::sig_async;
     pub use crate::utils::*;
 }

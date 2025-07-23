@@ -7,10 +7,7 @@ use payden::PLACEHOLDER_ADDRESS;
 use payden_model::*;
 use thaw::{ConfigProvider, ToasterProvider};
 
-use crate::common::*;
-use crate::constants::*;
-use crate::page::*;
-use crate::sig;
+use crate::prelude::*;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -88,10 +85,8 @@ pub fn Wallet() -> impl IntoView {
                 }/>
                 <div class="grid grid-cols-2 gap-x-8 gap-y-4">
                     <ButtonNavigateSend
-                        on_press=sig! {
-                            context.read()
-                                .as_ref()
-                                .map(|controller| controller.borrow().model.page().set(Page::Send));
+                        on_press=sig_async! {
+                            context.await.borrow().model.page().set(Page::Send);
                         }
                         active=sig! {
                             context.read()
@@ -103,13 +98,9 @@ pub fn Wallet() -> impl IntoView {
                         }
                     />
                     <ButtonNavigateReceive
-                        on_press=sig! {
-                            context.read()
-                                .as_ref()
-                                .map(|controller| {
-                                    controller.borrow().model.page().set(Page::Receive)
-                                });
-                            }
+                        on_press=sig_async! {
+                            context.await.borrow().model.page().set(Page::Receive);
+                        }
                         active=sig! {
                             context.read()
                                 .as_ref()
@@ -120,12 +111,8 @@ pub fn Wallet() -> impl IntoView {
                         }
                     />
                     <ButtonNavigateFaucet
-                        on_press=sig! {
-                            context.read()
-                                .as_ref()
-                                .map(|controller| {
-                                    controller.borrow().model.page().set(Page::Faucet)
-                                });
+                        on_press=sig_async! {
+                            context.await.borrow().model.page().set(Page::Faucet);
                         }
                         active=sig! {
                             context.read()
@@ -137,13 +124,9 @@ pub fn Wallet() -> impl IntoView {
                         }
                     />
                     <ButtonNavigateActivity
-                        on_press=sig! {
-                            context.read()
-                                .as_ref()
-                                .map(|controller| {
-                                    controller.borrow().model.page().set(Page::Activity)
-                                });
-                            }
+                        on_press=sig_async! {
+                            context.await.borrow().model.page().set(Page::Activity);
+                        }
                         active=sig! {
                             context.read()
                                 .as_ref()
