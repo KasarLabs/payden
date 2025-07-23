@@ -6,6 +6,8 @@ use crate::prelude::*;
 
 #[component]
 pub fn Address(address: impl Fn() -> String + Field) -> impl IntoView {
+    let message_bus = expect_context::<MessageBus>();
+
     let address_short = move || {
         let address = address();
         if address.len() > 12 {
@@ -46,7 +48,7 @@ pub fn Address(address: impl Fn() -> String + Field) -> impl IntoView {
             p-1 pb-0
         ">
             <button
-                on:click= sig!{ _ => {
+                on:click=sig!{ _ => {
                     copy(&address());
                     toast_dispatch();
                 }}
@@ -59,11 +61,16 @@ pub fn Address(address: impl Fn() -> String + Field) -> impl IntoView {
                 <IconCopy size={ ICON_M } { .. } class="stroke-1 stroke-current"/>
                 { sig! { address_short() }}
             </button>
-            <button class="
-                flex flex-row gap-2 place-items-center
-                bg-white
-                cursor-pointer
-            ">
+            <button
+                on:click=sig! { _ => {
+                    message_bus.dispatch(payden_controller::ControllerAction::Refresh);
+                }}
+                class="
+                    flex flex-row gap-2 place-items-center
+                    bg-white
+                    cursor-pointer
+                "
+            >
                 <IconRefresh size={ ICON_M } { .. } class="stroke-1 stroke-current"/>
             </button>
         </div>
