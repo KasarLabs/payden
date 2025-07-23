@@ -2,7 +2,7 @@ use leptos::prelude::*;
 use leptos_use::*;
 use thaw::*;
 
-use crate::{ICON_M, IconCopy, sig, utils::Field};
+use crate::prelude::*;
 
 #[component]
 pub fn Address(address: impl Fn() -> String + Field) -> impl IntoView {
@@ -40,21 +40,32 @@ pub fn Address(address: impl Fn() -> String + Field) -> impl IntoView {
     let UseClipboardReturn { copy, .. } = use_clipboard();
 
     view! {
-        <button
-            on:click= sig!{ _ => {
-                copy(&address());
-                toast_dispatch();
-            }}
-            class="
-                flex flex-row gap-2 items-center
-                font-body text-(--miden-branding) text-lg
-                bg-white rounded-md
-                p-1 pb-0
+        <div class="
+            flex flex-row gap-2 items-center justify-between
+            font-body text-(--miden-branding) text-lg
+            p-1 pb-0
+        ">
+            <button
+                on:click= sig!{ _ => {
+                    copy(&address());
+                    toast_dispatch();
+                }}
+                class="
+                    flex flex-row gap-2 items-center
+                    bg-white
+                    cursor-pointer
+                "
+            >
+                <IconCopy size={ ICON_M } { .. } class="stroke-1 stroke-current"/>
+                { sig! { address_short() }}
+            </button>
+            <button class="
+                flex flex-row gap-2 place-items-center
+                bg-white
                 cursor-pointer
-            "
-        >
-            <IconCopy size={ ICON_M } {..} class="stroke-1 stroke-current"/>
-            { sig! { address_short() }}
-        </button>
+            ">
+                <IconRefresh size={ ICON_M } { .. } class="stroke-1 stroke-current"/>
+            </button>
+        </div>
     }
 }

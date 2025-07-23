@@ -2,9 +2,7 @@ use leptos::logging;
 use leptos::prelude::*;
 use payden_model::*;
 
-use crate::common::*;
-use crate::constants::*;
-use crate::sig;
+use crate::prelude::*;
 
 #[component]
 pub fn PageReceive() -> impl IntoView {
@@ -12,7 +10,7 @@ pub fn PageReceive() -> impl IntoView {
 
     Effect::new(move |_| {
         context.read().as_ref().map(|controller| {
-            controller.model.page().set(Page::Receive);
+            controller.borrow().model.page().set(Page::Receive);
         })
     });
 
@@ -21,7 +19,7 @@ pub fn PageReceive() -> impl IntoView {
             <QrCode data=sig! {
                 context.read()
                     .as_ref()
-                    .map(|controller| controller.model.address().get())
+                    .map(|controller| controller.borrow().model.address().get())
                     .unwrap_or_default()
             }/>
         </div>
@@ -30,7 +28,7 @@ pub fn PageReceive() -> impl IntoView {
                 address=sig! {
                     context.read()
                         .as_ref()
-                        .map(|controller| controller.model.address().get())
+                        .map(|controller| controller.borrow().model.address().get())
                         .unwrap_or_default()
                 }
                 on_press=sig! { logging::log!("Address copied") }

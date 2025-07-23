@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 use thaw::*;
 
-use crate::{sig, utils::Field};
+use crate::prelude::*;
 
 use privtate::*;
 
@@ -9,19 +9,18 @@ use privtate::*;
 pub fn ButtonFullNotify(
     on_press: impl Fn() + Field,
     active: impl Fn() -> bool + Field,
-    message_valid: &'static str,
-    message_invalid: &'static str,
+    message: &'static str,
     children: Children,
 ) -> impl IntoView {
     let toaster = ToasterInjection::expect_context();
-    let toast_dispatch_valid = move || {
+    let toast_dispatch = move || {
         toaster.dismiss_all();
         toaster.dispatch_toast(
             sig! {
                 view! {
                     <Toast>
                         <ToastTitle>
-                            { message_valid }
+                            { message }
                         </ToastTitle>
                     </Toast>
                 }
@@ -30,33 +29,14 @@ pub fn ButtonFullNotify(
         )
     };
 
-    let toast_dispatch_invalid = move || {
-        toaster.dismiss_all();
-        toaster.dispatch_toast(
-            sig! {
-                view! {
-                    <Toast>
-                        <ToastTitle>
-                            { message_invalid }
-                        </ToastTitle>
-                    </Toast>
-                }
-            },
-            ToastOptions::default().with_intent(ToastIntent::Error).with_position(ToastPosition::Top),
-        )
-    };
-
-    let on_press_valid = move || {
+    let on_press = move || {
         on_press();
-        toast_dispatch_valid()
+        toast_dispatch()
     };
-
-    let on_press_invalid = move || toast_dispatch_invalid();
 
     view! {
         <ButtonFull
-            on_press_valid=on_press_valid
-            on_press_invalid=on_press_invalid
+            on_press=on_press
             valid=active
         >
             { children() }
@@ -68,12 +48,11 @@ mod privtate {
     use leptos::prelude::*;
     use leptos_use::*;
 
-    use crate::{sig, utils::Field};
+    use crate::prelude::*;
 
     #[component]
     pub fn ButtonFull(
-        on_press_valid: impl Fn() + Field,
-        on_press_invalid: impl Fn() + Field,
+        on_press: impl Fn() + Field,
         valid: impl Fn() -> bool + Field,
         children: Children,
     ) -> impl IntoView {
@@ -92,9 +71,7 @@ mod privtate {
                 // disabled=sig! { !active() }
                 on:click=sig! { _  => {
                     if valid() {
-                        on_press_valid();
-                    } else {
-                        on_press_invalid();
+                        on_press();
                     }
                     animate_set.set(true);
                     animate_start(());

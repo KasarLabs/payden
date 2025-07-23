@@ -1,6 +1,5 @@
+use crate::prelude::*;
 use leptos::prelude::*;
-
-use crate::{sig, utils::*};
 
 #[component]
 pub fn Balance(balance: impl Fn() -> f64 + Field) -> impl IntoView {

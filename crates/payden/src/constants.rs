@@ -23,4 +23,5 @@ pub const PLACEHOLDER_AMOUNT: &str = "0.00";
 
 pub const LEN_ADDRESS: usize = 37;
 
-pub type Context = LocalResource<payden_controller::Controller>;
+pub type Context = LocalResource<alloc::rc::Rc<core::cell::RefCell<payden_controller::Controller>>>;
+pub type MessageBus = Action<payden_controller::ControllerAction, (), LocalStorage>;

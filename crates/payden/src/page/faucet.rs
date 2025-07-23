@@ -6,9 +6,7 @@ use leptos_router::hooks::use_query;
 use leptos_router::params::Params;
 use payden_model::*;
 
-use crate::common::*;
-use crate::constants::*;
-use crate::sig;
+use crate::prelude::*;
 
 #[derive(Params, PartialEq)]
 struct QuerySend {
@@ -26,7 +24,7 @@ pub fn PageFaucet() -> impl IntoView {
 
     Effect::new(move |_| {
         context.read().as_ref().map(|controller| {
-            controller.model.page().set(Page::Faucet);
+            controller.borrow().model.page().set(Page::Faucet);
         })
     });
 
@@ -44,7 +42,9 @@ pub fn PageFaucet() -> impl IntoView {
                         context
                             .read()
                             .as_ref()
-                            .map(|controller| controller.model.amount_faucet().set(amount));
+                            .map(|controller| {
+                                controller.borrow().model.amount_faucet().set(amount)
+                            });
                     }}
                     validity_update=sig! { valid => valid_amount_set.set(valid) }
                     url_encode="a"
@@ -53,8 +53,7 @@ pub fn PageFaucet() -> impl IntoView {
             <ButtonFullNotify
                 on_press=sig! { logging::log!("Minting...") }
                 active=sig! { valid_amount.get() }
-                message_valid="Requested Funds!"
-                message_invalid="Invalid amount!"
+                message="Requested Funds!"
             >
                 Deposit
             </ButtonFullNotify>

@@ -6,9 +6,7 @@ use leptos_router::hooks::use_query;
 use leptos_router::params::Params;
 use payden_model::*;
 
-use crate::common::*;
-use crate::constants::*;
-use crate::sig;
+use crate::prelude::*;
 
 #[derive(Params, PartialEq)]
 struct QuerySend {
@@ -29,7 +27,7 @@ pub fn PageSend() -> impl IntoView {
 
     Effect::new(move |_| {
         context.read().as_ref().map(|controller| {
-            controller.model.page().set(Page::Send);
+            controller.borrow().model.page().set(Page::Send);
         })
     });
 
@@ -46,7 +44,9 @@ pub fn PageSend() -> impl IntoView {
                     address_update=sig! { address => {
                         context.read()
                             .as_ref()
-                            .map(|controller| controller.model.address_send().set(address));
+                            .map(|controller| {
+                                controller.borrow().model.address_send().set(address)
+                            });
                     }}
                     validity_update=sig! { valid => valid_recipient_set.set(valid) }
                     url_encode="r"
@@ -59,7 +59,9 @@ pub fn PageSend() -> impl IntoView {
                     amount_update=sig! { amount => {
                         context.read()
                             .as_ref()
-                            .map(|controller| controller.model.amount_send().set(amount));
+                            .map(|controller| {
+                                controller.borrow().model.amount_send().set(amount)
+                            });
                     }}
                     validity_update=sig! { valid => valid_amount_set.set(valid) }
                     url_encode="a"
@@ -68,8 +70,7 @@ pub fn PageSend() -> impl IntoView {
             <ButtonFullNotify
                 on_press=sig! { logging::log!("Sending...") }
                 active=sig! { valid_recipient.get() && valid_amount.get() }
-                message_valid="Transaction Sent!"
-                message_invalid="Invalid recipient or amount!"
+                message="Transaction Sent!"
             >
                 Send
             </ButtonFullNotify>

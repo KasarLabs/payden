@@ -20,3 +20,11 @@ fn main() {
     #[cfg(not(feature = "preview"))]
     mount::mount_to_body(app::App);
 }
+
+mod prelude {
+    pub use crate::common::*;
+    pub use crate::constants::*;
+    pub use crate::icons::*;
+    pub use crate::sig;
+    pub use crate::utils::*;
+}

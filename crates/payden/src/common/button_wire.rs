@@ -2,56 +2,9 @@ use leptos::prelude::*;
 use leptos_use::*;
 use thaw::*;
 
-use crate::{ICON_BASE, IconCopy, sig, utils::Field};
+use crate::prelude::*;
 
-// TODO: refactor components into twp types: full and wire
-#[component]
-pub fn WireButton(
-    text: impl Fn() -> String + Field,
-    on_press: impl Fn() + Send + Sync + 'static,
-    children: Children,
-) -> impl IntoView {
-    const ANIMATION_DURATION: f64 = 150.0;
-
-    let (animate, animate_set) = signal(false);
-    let UseTimeoutFnReturn { start: animate_start, .. } = use_timeout_fn(
-        move |_: ()| {
-            animate_set.set(false);
-        },
-        ANIMATION_DURATION,
-    );
-
-    view! {
-        <button
-            type="button"
-            // TODO: extract the  button logic into a separate container
-            on:click=sig! { _ => {
-                animate_set.set(true);
-                on_press();
-                animate_start(());
-            }}
-            style:cursor="pointer"
-            class="
-                flex flex-row w-full
-                font-body text-base text-black
-                border-current border-1
-                bg-current rounded-md
-                transition-all duration-{ANIMATION_DURATION}
-            "
-            class=(["mt-0.5"], sig! { !animate.get() })
-            class=(["pb-0.5", "mt-0"], sig! { animate.get() })
-        >
-            <div class="
-                flex flex-row gap-1.5 min-w-0 grow
-                bg-white rounded-md 
-                px-2.5 py-1.5 
-            ">
-                { children() }
-                <p class="truncate">{ sig! { text() }}</p>
-            </div>
-        </button>
-    }
-}
+use private::*;
 
 #[component]
 pub fn WireButtonCopyAddress(address: impl Fn() -> String + Field, on_press: impl Fn() + Field) -> impl IntoView {
@@ -91,5 +44,59 @@ pub fn WireButtonCopyAddress(address: impl Fn() -> String + Field, on_press: imp
         }}>
             <IconCopy size={ ICON_BASE } {..} class="stroke-1 stroke-current"/>
         </WireButton>
+    }
+}
+
+mod private {
+    use leptos::prelude::*;
+    use leptos_use::*;
+
+    use crate::prelude::*;
+
+    #[component]
+    pub fn WireButton(
+        text: impl Fn() -> String + Field,
+        on_press: impl Fn() + Send + Sync + 'static,
+        children: Children,
+    ) -> impl IntoView {
+        const ANIMATION_DURATION: f64 = 150.0;
+
+        let (animate, animate_set) = signal(false);
+        let UseTimeoutFnReturn { start: animate_start, .. } = use_timeout_fn(
+            move |_: ()| {
+                animate_set.set(false);
+            },
+            ANIMATION_DURATION,
+        );
+
+        view! {
+            <button
+                type="button"
+                on:click=sig! { _ => {
+                    animate_set.set(true);
+                    on_press();
+                    animate_start(());
+                }}
+                style:cursor="pointer"
+                class="
+                flex flex-row w-full
+                font-body text-base text-black
+                border-current border-1
+                bg-current rounded-md
+                transition-all duration-{ANIMATION_DURATION}
+            "
+                class=(["mt-0.5"], sig! { !animate.get() })
+                class=(["pb-0.5", "mt-0"], sig! { animate.get() })
+            >
+                <div class="
+                flex flex-row gap-1.5 min-w-0 grow
+                bg-white rounded-md 
+                px-2.5 py-1.5 
+            ">
+                    { children() }
+                    <p class="truncate">{ sig! { text() }}</p>
+                </div>
+            </button>
+        }
     }
 }

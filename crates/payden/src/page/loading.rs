@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 use leptos_use::use_interval_fn;
 
-use crate::sig;
+use crate::prelude::*;
 
 #[component]
 pub fn PageLoading() -> impl IntoView {

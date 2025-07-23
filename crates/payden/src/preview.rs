@@ -78,8 +78,7 @@ pub fn App() -> impl IntoView {
                         <ButtonFullNotify
                             on_press=sig! { logging::log!("Send") }
                             active=sig! { true }
-                            message_valid="Transaction Sent!"
-                            message_invalid="Invalid recipient or amount!"
+                            message="Transaction Sent!"
                         >
                             Send
                         </ButtonFullNotify>

@@ -1,6 +1,6 @@
+use crate::prelude::*;
 use leptos::prelude::*;
 
-use crate::{ICON_BASE, IconGithubCircle, IconTelegram, IconTwitter, LogoKasar};
 use private::*;
 
 #[component]

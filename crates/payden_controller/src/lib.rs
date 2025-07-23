@@ -16,6 +16,13 @@ use rand_core::RngCore;
 
 use crate::error::*;
 
+#[derive(Clone, Copy)]
+pub enum ControllerAction {
+    RegenerateAccount,
+    Send,
+    Mint,
+}
+
 pub struct Controller {
     client: miden_client::Client,
     keystore: Arc<miden_client::keystore::WebKeyStore<Box<dyn miden_client::crypto::FeltRng>>>,
@@ -23,8 +30,17 @@ pub struct Controller {
 }
 
 impl Controller {
-    // TODO: add back proper error handling here
-    pub async fn new() -> Self {
+    pub async fn handle(&mut self, action: ControllerAction) {
+        match action {
+            ControllerAction::RegenerateAccount => todo!(),
+            ControllerAction::Send => todo!(),
+            ControllerAction::Mint => todo!(),
+        }
+    }
+}
+
+impl Controller {
+    pub async fn new() -> alloc::rc::Rc<core::cell::RefCell<Self>> {
         // Determine the number of blocks to consider a transaction stale.
         let tx_graceful_blocks = Some(20);
 
@@ -57,7 +73,7 @@ impl Controller {
             controller.regenerate_account().await.unwrap();
         }
 
-        controller
+        alloc::rc::Rc::new(controller.into())
     }
 
     pub async fn regenerate_account(&mut self) -> ResultDyn<()> {

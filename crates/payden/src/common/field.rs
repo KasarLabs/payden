@@ -1,7 +1,6 @@
+use crate::prelude::*;
 use leptos::prelude::*;
 
-use crate::constants::*;
-use crate::utils::Field;
 use private::*;
 
 #[component]
@@ -45,10 +44,8 @@ pub fn InputFieldAddress(
 }
 
 mod private {
+    use crate::prelude::*;
     use leptos::prelude::*;
-
-    use crate::constants::*;
-    use crate::{sig, utils::Field};
 
     #[component]
     pub fn InputField(
