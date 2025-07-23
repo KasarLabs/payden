@@ -18,6 +18,8 @@ use rand_core::RngCore;
 
 use crate::error::*;
 
+const FAUCET_TESTNET: &str = "mtst1qppen8yngje35gr223jwe6ptjy7gedn9";
+
 #[derive(Clone, Copy)]
 pub enum ControllerAction {
     Refresh,
@@ -28,26 +30,23 @@ pub enum ControllerAction {
 pub struct Controller {
     client: miden_client::Client,
     account_id: miden_objects::account::AccountId,
-    store: Arc<miden_client::store::web_store::WebStore>,
-    keystore: Arc<miden_client::keystore::WebKeyStore<Box<dyn miden_client::crypto::FeltRng>>>,
     pub model: reactive_stores::Store<payden_model::Model>,
 }
 
+// TODO: add back proper error handling
 impl Controller {
     pub async fn handle(&mut self, action: ControllerAction) {
         match action {
             ControllerAction::Refresh => {
-                logging::log!("Refresh");
-                self.account_sync().await.unwrap();
+                if let Err(e) = self.account_sync().await {
+                    logging::log!("Failed to refresh account state: {e:?}");
+                }
             }
             ControllerAction::Send => logging::log!("Sending"),
             ControllerAction::Mint => logging::log!("Minting"),
         }
     }
-}
 
-// TODO: add back proper error handling
-impl Controller {
     pub async fn new() -> alloc::rc::Rc<core::cell::RefCell<Self>> {
         // Determine the number of blocks to consider a transaction stale.
         let tx_graceful_blocks = Some(20);
@@ -67,14 +66,14 @@ impl Controller {
             tx_graceful_blocks,
             max_block_number_delta,
         );
-        // TODO: display latest block number in UI
+
         let _sync_state = client.sync_state().await.unwrap();
 
         let model = reactive_stores::Store::new(payden_model::Model::default());
 
         // Restoring previous account
-        let mut controller = if let Some((header, _)) = client.get_account_headers().await.unwrap().first() {
-            Self::account_retrieve(client, store, keystore, model, header).unwrap()
+        let controller = if let Some((header, _)) = client.get_account_headers().await.unwrap().first() {
+            Self::account_retrieve(client, store, model, header).await.unwrap()
         } else {
             Self::account_generate(client, store, keystore, model).await.unwrap()
         };
@@ -82,17 +81,37 @@ impl Controller {
         alloc::rc::Rc::new(controller.into())
     }
 
-    pub fn account_retrieve(
+    pub async fn account_retrieve(
         client: miden_client::Client,
         store: Arc<miden_client::store::web_store::WebStore>,
-        keystore: Arc<miden_client::keystore::WebKeyStore<Box<dyn miden_client::crypto::FeltRng>>>,
         model: reactive_stores::Store<payden_model::Model>,
         header: &miden_client::account::AccountHeader,
     ) -> ResultDyn<Self> {
         let account_id = header.id();
+
+        // STEP 1 - Restore account auth cache
+
+        // Based off https://github.com/0xMiden/miden-client/blob/eb7643811a724378c63198b80c7d98a564777f0e/crates/web-client/src/account.rs#L48-L77
+        // and https://github.com/0xMiden/miden-client/pull/779
+        let account_record = client.get_account(account_id).await?.expect("known address");
+        let account = account_record.account();
+        let pub_key_index = u8::from(account.is_faucet());
+        let account_pub_key = account.storage().get_item(pub_key_index).unwrap();
+        store.fetch_and_cache_account_auth_by_pub_key(account_pub_key.to_hex()).await?;
+
+        // Step 2 - Update account address
+
         let address = account_id.to_bech32(miden_objects::account::NetworkId::Testnet);
         model.address().set(address);
-        Ok(Self { client, account_id, store, keystore, model })
+
+        // Step 3 - Update account balance
+
+        let faucet = miden_client::account::AccountId::from_bech32(FAUCET_TESTNET).expect("known address").1;
+        let vault = account.vault();
+        let balance_new = vault.get_balance(faucet).unwrap() / 1_000_000;
+        model.balance().set(balance_new as f64);
+
+        Ok(Self { client, account_id, model })
     }
 
     pub async fn account_generate(
@@ -101,11 +120,14 @@ impl Controller {
         keystore: Arc<miden_client::keystore::WebKeyStore<Box<dyn miden_client::crypto::FeltRng>>>,
         model: reactive_stores::Store<payden_model::Model>,
     ) -> ResultDyn<Self> {
+        // Step 1 - generate client public/private keys
+
         let mut account_seed = [0u8; 32];
         client.rng().fill_bytes(&mut account_seed);
-
         let keypair = miden_client::crypto::SecretKey::with_rng(client.rng());
         let public_key = keypair.public_key();
+
+        // Step 2 - build the account MASM
 
         let builder = miden_client::account::AccountBuilder::new(account_seed)
             .account_type(miden_client::account::AccountType::RegularAccountUpdatableCode)
@@ -115,20 +137,25 @@ impl Controller {
 
         let (account, seed) = builder.build()?;
 
+        // Step 3 - Update the client
+
         client.add_account(&account, Some(seed), false /* overwrite */).await?;
         keystore.add_key(&miden_client::auth::AuthSecretKey::RpoFalcon512(keypair)).await?;
 
         // Based off https://github.com/0xMiden/miden-client/blob/eb7643811a724378c63198b80c7d98a564777f0e/crates/web-client/src/account.rs#L48-L77
+        // and https://github.com/0xMiden/miden-client/pull/779
         let account_storage = account.storage();
         let pub_key_index = u8::from(account.is_faucet());
         let account_pub_key = account_storage.get_item(pub_key_index).unwrap();
         store.fetch_and_cache_account_auth_by_pub_key(account_pub_key.to_hex()).await.unwrap();
 
+        // Step 4 - Update account address
+
         let account_id = account.id();
         let address = account_id.to_bech32(miden_objects::account::NetworkId::Testnet);
         model.address().set(address);
 
-        Ok(Self { client, account_id, store, keystore, model })
+        Ok(Self { client, account_id, model })
     }
 
     // Based off the [Mint, Consume, and Create Notes] in the Miden Book.
@@ -137,53 +164,27 @@ impl Controller {
     pub async fn account_sync(&mut self) -> ResultDyn<()> {
         self.client.sync_state().await?;
 
-        logging::log!("Downloading faucet");
-
-        let (_, faucet) =
-            miden_client::account::AccountId::from_bech32("mtst1qppen8yngje35gr223jwe6ptjy7gedn9").unwrap();
-        self.client.import_account_by_id(faucet).await.unwrap();
-
-        logging::log!("Downloading faucet - DONE");
-
         logging::log!("Getting notes");
-
         let consummable_notes = self.client.get_consumable_notes(Some(self.account_id)).await?;
-
-        if let Some((note, _)) = consummable_notes.first() {
-            for fungible in note.assets().iter_fungible() {
-                logging::log! {"Note amount: {}", fungible.amount()};
-            }
-        }
-
-        logging::log!("Getting notes - DONE - {}", consummable_notes.len());
 
         logging::log!("Building transaction request");
         let note_ids = consummable_notes.iter().map(|(note, _)| note.id()).collect();
         let transaction_request =
             miden_client::transaction::TransactionRequestBuilder::default().build_consume_notes(note_ids)?;
-        logging::log!("Building transaction request - DONE");
 
         logging::log!("Executing transaction");
         let tx_execution_result = self.client.new_transaction(self.account_id, transaction_request).await?;
-        logging::log!("Executing transaction - DONE");
 
         logging::log!("Submitting transaction");
         let prover = Arc::new(miden_client::RemoteTransactionProver::new("https://tx-prover.testnet.miden.io"));
         self.client.submit_transaction_with_prover(tx_execution_result, prover).await?;
-        logging::log!("Submitting transaction - DONE");
 
-        logging::log!("Getting Account");
-        let account = self.client.get_account(self.account_id).await.unwrap().unwrap();
-        logging::log!("Getting Account - DONE");
-
-        logging::log!("Getting balance");
+        let faucet = miden_client::account::AccountId::from_bech32(FAUCET_TESTNET).expect("known address").1;
+        let account = self.client.get_account(self.account_id).await?.expect("known address");
         let vault = account.account().vault();
-        let balance_new = vault.get_balance(faucet).unwrap() / 1_000_000;
-        logging::log!("Getting balance - DONE");
+        let balance_new = vault.get_balance(faucet).expect("balance update as part of tx") / 1_000_000;
 
-        logging::log!("New balance is {balance_new}");
-
-        self.model.balance().update(|balance| *balance += *balance + balance_new as f64);
+        self.model.balance().set(balance_new as f64);
 
         Ok(())
     }
