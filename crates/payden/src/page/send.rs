@@ -24,12 +24,14 @@ pub fn PageSend() -> impl IntoView {
     let recipient = move || query.read().as_ref().ok().and_then(|q| q.r.clone());
     let amount = move || query.read().as_ref().ok().and_then(|q| q.a.clone());
 
-    context.read().as_ref().map(|controller| {
-        controller.model.page().set(Page::Send);
-    });
-
     let (valid_recipient, valid_recipient_set) = signal(true);
     let (valid_amount, valid_amount_set) = signal(true);
+
+    Effect::new(move |_| {
+        context.read().as_ref().map(|controller| {
+            controller.model.page().set(Page::Send);
+        })
+    });
 
     view! {
         <Form
@@ -44,10 +46,7 @@ pub fn PageSend() -> impl IntoView {
                     address_update=sig! { address => {
                         context.read()
                             .as_ref()
-                            .expect("Controller has already loaded")
-                            .model
-                            .address_send()
-                            .set(address);
+                            .map(|controller| controller.model.address_send().set(address));
                     }}
                     validity_update=sig! { valid => valid_recipient_set.set(valid) }
                     url_encode="r"
@@ -60,10 +59,7 @@ pub fn PageSend() -> impl IntoView {
                     amount_update=sig! { amount => {
                         context.read()
                             .as_ref()
-                            .expect("Controller has already loaded")
-                            .model
-                            .amount_send()
-                            .set(amount);
+                            .map(|controller| controller.model.amount_send().set(amount));
                     }}
                     validity_update=sig! { valid => valid_amount_set.set(valid) }
                     url_encode="a"

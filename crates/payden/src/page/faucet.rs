@@ -22,11 +22,13 @@ pub fn PageFaucet() -> impl IntoView {
     let query = use_query::<QuerySend>();
     let amount = move || query.read().as_ref().ok().and_then(|q| q.a.clone());
 
-    context.read().as_ref().map(|controller| {
-        controller.model.page().set(Page::Faucet);
-    });
-
     let (valid_amount, valid_amount_set) = signal(true);
+
+    Effect::new(move |_| {
+        context.read().as_ref().map(|controller| {
+            controller.model.page().set(Page::Faucet);
+        })
+    });
 
     view! {
         <Form

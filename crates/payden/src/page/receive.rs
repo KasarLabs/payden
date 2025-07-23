@@ -10,8 +10,10 @@ use crate::sig;
 pub fn PageReceive() -> impl IntoView {
     let context = expect_context::<Context>();
 
-    context.read().as_ref().map(|controller| {
-        controller.model.page().set(Page::Receive);
+    Effect::new(move |_| {
+        context.read().as_ref().map(|controller| {
+            controller.model.page().set(Page::Receive);
+        })
     });
 
     view! {
@@ -19,8 +21,8 @@ pub fn PageReceive() -> impl IntoView {
             <QrCode data=sig! {
                 context.read()
                     .as_ref()
-                    .expect("Controller has already loaded")
-                    .model.address().get()
+                    .map(|controller| controller.model.address().get())
+                    .unwrap_or_default()
             }/>
         </div>
         <InputTitle title="Address" center=true>
@@ -28,8 +30,8 @@ pub fn PageReceive() -> impl IntoView {
                 address=sig! {
                     context.read()
                         .as_ref()
-                        .expect("Controller has already loaded")
-                        .model.address().get()
+                        .map(|controller| controller.model.address().get())
+                        .unwrap_or_default()
                 }
                 on_press=sig! { logging::log!("Address copied") }
             />
