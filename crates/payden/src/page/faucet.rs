@@ -20,12 +20,13 @@ pub fn PageFaucet() -> impl IntoView {
     let context = expect_context::<Context>();
 
     let query = use_query::<QuerySend>();
-    let amount = move || query.read().as_ref().ok().and_then(|q| q.a.clone()).unwrap_or(DEFAULT_AMOUNT.to_string());
+    let amount = move || query.read().as_ref().ok().and_then(|q| q.a.clone());
 
     context.read().as_ref().map(|controller| {
         controller.model.page().set(Page::Faucet);
-        controller.model.amount_faucet().set(amount());
     });
+
+    let (valid_amount, valid_amount_set) = signal(true);
 
     view! {
         <Form
@@ -43,12 +44,15 @@ pub fn PageFaucet() -> impl IntoView {
                             .as_ref()
                             .map(|controller| controller.model.amount_faucet().set(amount));
                     }}
+                    validity_update=sig! { valid => valid_amount_set.set(valid) }
                     url_encode="a"
                 />
             </InputTitle>
             <ButtonFullNotify
                 on_press=sig! { logging::log!("Minting...") }
-                message="Requested Funds!"
+                active=sig! { valid_amount.get() }
+                message_valid="Requested Funds!"
+                message_invalid="Invalid amount!"
             >
                 Deposit
             </ButtonFullNotify>

@@ -64,18 +64,22 @@ pub fn App() -> impl IntoView {
                         </div>
                         <WireButtonCopyAddress address=sig! { model.address().get() } on_press=sig! { logging::log!("Copy") }/>
                         <InputFieldAddress
-                            address=sig! { model.address().get() }
+                            address=sig! { Some(model.address().get()) }
                             address_update=sig! { address_new => model.address().update(|address| *address = address_new) }
+                            validity_update=sig! { _ => () }
                             url_encode="r"
                         />
                         <InputFieldAmount
-                            amount=sig! { model.amount_send().get() }
+                            amount=sig! { Some(model.amount_send().get()) }
                             amount_update=sig! { amount_new => model.amount_send().update(|amount| *amount = amount_new )}
+                            validity_update=sig! { _ => () }
                             url_encode="a"
                         />
                         <ButtonFullNotify
                             on_press=sig! { logging::log!("Send") }
-                            message="Transaction Sent!"
+                            active=sig! { true }
+                            message_valid="Transaction Sent!"
+                            message_invalid="Invalid recipient or amount!"
                         >
                             Send
                         </ButtonFullNotify>

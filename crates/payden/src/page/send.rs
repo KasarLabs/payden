@@ -21,14 +21,15 @@ pub fn PageSend() -> impl IntoView {
     let context = expect_context::<Context>();
 
     let query = use_query::<QuerySend>();
-    let recipient = move || query.read().as_ref().ok().and_then(|q| q.r.clone()).unwrap_or(DEFAULT_ADDRESS.to_string());
-    let amount = move || query.read().as_ref().ok().and_then(|q| q.a.clone()).unwrap_or(DEFAULT_AMOUNT.to_string());
+    let recipient = move || query.read().as_ref().ok().and_then(|q| q.r.clone());
+    let amount = move || query.read().as_ref().ok().and_then(|q| q.a.clone());
 
     context.read().as_ref().map(|controller| {
         controller.model.page().set(Page::Send);
-        controller.model.address_send().set(recipient());
-        controller.model.amount_send().set(amount());
     });
+
+    let (valid_recipient, valid_recipient_set) = signal(true);
+    let (valid_amount, valid_amount_set) = signal(true);
 
     view! {
         <Form
@@ -48,7 +49,9 @@ pub fn PageSend() -> impl IntoView {
                             .address_send()
                             .set(address);
                     }}
+                    validity_update=sig! { valid => valid_recipient_set.set(valid) }
                     url_encode="r"
+                    {..}
                 />
             </InputTitle>
             <InputTitle title="Amount">
@@ -62,12 +65,15 @@ pub fn PageSend() -> impl IntoView {
                             .amount_send()
                             .set(amount);
                     }}
+                    validity_update=sig! { valid => valid_amount_set.set(valid) }
                     url_encode="a"
                 />
             </InputTitle>
             <ButtonFullNotify
                 on_press=sig! { logging::log!("Sending...") }
-                message="Transaction Sent!"
+                active=sig! { valid_recipient.get() && valid_amount.get() }
+                message_valid="Transaction Sent!"
+                message_invalid="Invalid recipient or amount!"
             >
                 Send
             </ButtonFullNotify>

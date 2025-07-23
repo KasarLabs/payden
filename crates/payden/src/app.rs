@@ -3,9 +3,8 @@ use leptos::prelude::*;
 use leptos_meta::*;
 use leptos_router::components::*;
 use leptos_router::path;
-use payden::DEFAULT_ADDRESS;
+use payden::PLACEHOLDER_ADDRESS;
 use payden_model::*;
-use reactive_stores::Store;
 use thaw::{ConfigProvider, ToasterProvider};
 
 use crate::common::*;
@@ -69,7 +68,7 @@ pub fn Wallet() -> impl IntoView {
                     context.read()
                         .as_ref()
                         .map(|controller| controller.model.address().get())
-                        .unwrap_or(DEFAULT_ADDRESS.to_string())
+                        .unwrap_or(PLACEHOLDER_ADDRESS.to_string())
                 }/>
                 <Balance balance=sig! {
                     context.read()
