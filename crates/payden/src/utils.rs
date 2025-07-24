@@ -17,7 +17,7 @@ macro_rules! sig {
 macro_rules! sig_async {
     ($signal:expr) => {{ move || Suspend::new(async move { $signal })}};
     ($signal:expr;) => {{ move || { Suspend::new(async move { $signal }); } }};
-    ($($param:tt),+ $(,)? => $signal:expr) => {{ move |$($param,)+| Suspend::new(async move { $signal }) }};
+    ($($param:tt),+ $(,)? => $signal:expr) => {{ move |$($param,)+| { Suspend::new(async move { $signal }); }}};
     (_ => $signal:expr) => {{ move |_| Suspend::new(async move { $signal }) }};
 }
 

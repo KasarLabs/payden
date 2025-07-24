@@ -17,6 +17,7 @@ struct QuerySend {
 #[component]
 pub fn PageSend() -> impl IntoView {
     let context = expect_context::<Context>();
+    let message_bus = expect_context::<MessageBus>();
 
     let query = use_query::<QuerySend>();
     let recipient = move || query.read().as_ref().ok().and_then(|q| q.r.clone());
@@ -68,7 +69,13 @@ pub fn PageSend() -> impl IntoView {
                 />
             </InputTitle>
             <ButtonFullNotify
-                on_press=sig! { logging::log!("Sending...") }
+                on_press=sig! {{
+                    if let (Some(amount), Some(recipient)) = (amount(), recipient()) {
+                        let amount = amount.parse().unwrap();
+                        let message = payden_controller::ControllerAction::Send { amount , recipient };
+                        message_bus.dispatch(message);
+                    }
+                };}
                 active=sig! { valid_recipient.get() && valid_amount.get() }
                 message="Transaction Sent!"
             >

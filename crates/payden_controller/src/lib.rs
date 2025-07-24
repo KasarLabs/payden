@@ -2,28 +2,24 @@
 //!
 //! [Miden docs]: https://0xmiden.github.io/miden-docs/imported/miden-tutorials/src/rust-client/create_deploy_tutorial.html
 
-#![cfg_attr(not(test), no_std)]
-
 extern crate alloc;
-
-use alloc::string::ToString;
 
 mod error;
 
-use alloc::boxed::Box;
-use alloc::sync::Arc;
 use leptos::{logging, prelude::*};
+use miden_objects::FieldElement;
 use payden_model::*;
 use rand_core::RngCore;
 
 use crate::error::*;
 
-const FAUCET_TESTNET: &str = "mtst1qppen8yngje35gr223jwe6ptjy7gedn9";
+const TESTNET_FAUCET: &str = "mtst1qppen8yngje35gr223jwe6ptjy7gedn9"; // Minting
+const TESTNET_PROVER: &str = "https://tx-prover.testnet.miden.io"; // Delegated Proving
 
-#[derive(Clone, Copy)]
+#[derive(Clone)]
 pub enum ControllerAction {
     Refresh,
-    Send,
+    Send { amount: f64, recipient: String },
     Mint,
 }
 
@@ -42,12 +38,16 @@ impl Controller {
                     logging::log!("Failed to refresh account state: {e:?}");
                 }
             }
-            ControllerAction::Send => logging::log!("Sending"),
+            ControllerAction::Send { amount, recipient } => {
+                if let Err(e) = self.send(amount, recipient).await {
+                    logging::log!("Failed to send tx: {e:?}");
+                }
+            }
             ControllerAction::Mint => logging::log!("Minting"),
         }
     }
 
-    pub async fn new() -> alloc::rc::Rc<core::cell::RefCell<Self>> {
+    pub async fn new() -> std::rc::Rc<std::cell::RefCell<Self>> {
         // Determine the number of blocks to consider a transaction stale.
         let tx_graceful_blocks = Some(20);
 
@@ -78,12 +78,12 @@ impl Controller {
             Self::account_generate(client, store, keystore, model).await.unwrap()
         };
 
-        alloc::rc::Rc::new(controller.into())
+        std::rc::Rc::new(controller.into())
     }
 
     pub async fn account_retrieve(
         client: miden_client::Client,
-        store: Arc<miden_client::store::web_store::WebStore>,
+        store: std::sync::Arc<miden_client::store::web_store::WebStore>,
         model: reactive_stores::Store<payden_model::Model>,
         header: &miden_client::account::AccountHeader,
     ) -> ResultDyn<Self> {
@@ -106,7 +106,7 @@ impl Controller {
 
         // Step 3 - Update account balance
 
-        let faucet = miden_client::account::AccountId::from_bech32(FAUCET_TESTNET).expect("known address").1;
+        let faucet = miden_client::account::AccountId::from_bech32(TESTNET_FAUCET).expect("known address").1;
         let vault = account.vault();
         let balance_new = vault.get_balance(faucet).unwrap() / 1_000_000;
         model.balance().set(balance_new as f64);
@@ -116,8 +116,8 @@ impl Controller {
 
     pub async fn account_generate(
         mut client: miden_client::Client,
-        store: Arc<miden_client::store::web_store::WebStore>,
-        keystore: Arc<miden_client::keystore::WebKeyStore<Box<dyn miden_client::crypto::FeltRng>>>,
+        store: std::sync::Arc<miden_client::store::web_store::WebStore>,
+        keystore: std::sync::Arc<miden_client::keystore::WebKeyStore<Box<dyn miden_client::crypto::FeltRng>>>,
         model: reactive_stores::Store<payden_model::Model>,
     ) -> ResultDyn<Self> {
         // Step 1 - generate client public/private keys
@@ -170,16 +170,16 @@ impl Controller {
         logging::log!("Building transaction request");
         let note_ids = consummable_notes.iter().map(|(note, _)| note.id()).collect();
         let transaction_request =
-            miden_client::transaction::TransactionRequestBuilder::default().build_consume_notes(note_ids)?;
+            miden_client::transaction::TransactionRequestBuilder::new().build_consume_notes(note_ids)?;
 
         logging::log!("Executing transaction");
         let tx_execution_result = self.client.new_transaction(self.account_id, transaction_request).await?;
 
         logging::log!("Submitting transaction");
-        let prover = Arc::new(miden_client::RemoteTransactionProver::new("https://tx-prover.testnet.miden.io"));
+        let prover = std::sync::Arc::new(miden_client::RemoteTransactionProver::new(TESTNET_PROVER));
         self.client.submit_transaction_with_prover(tx_execution_result, prover).await?;
 
-        let faucet = miden_client::account::AccountId::from_bech32(FAUCET_TESTNET).expect("known address").1;
+        let faucet = miden_client::account::AccountId::from_bech32(TESTNET_FAUCET).expect("known address").1;
         let account = self.client.get_account(self.account_id).await?.expect("known address");
         let vault = account.account().vault();
         let balance_new = vault.get_balance(faucet).expect("balance update as part of tx") / 1_000_000;
@@ -189,18 +189,48 @@ impl Controller {
         Ok(())
     }
 
-    pub async fn send(&mut self) {
-        todo!()
+    pub async fn send(&mut self, amount: f64, recipient: String) -> ResultDyn<()> {
+        self.client.sync_state().await?;
+
+        logging::log!("Creating assets");
+        let send_amount = amount as u64 * 1_000_000;
+        let (_, recipient) = miden_client::account::AccountId::from_bech32(&recipient)?;
+        let faucet = miden_client::account::AccountId::from_bech32(TESTNET_FAUCET).expect("known address").1;
+
+        let fungible_asset = miden_client::asset::FungibleAsset::new(faucet, send_amount).unwrap();
+        let payment_data = miden_client::transaction::PaymentNoteDescription::new(
+            vec![fungible_asset.into()],
+            self.account_id,
+            recipient,
+        );
+
+        logging::log!("Building transaction request");
+        let transaction_request = miden_client::transaction::TransactionRequestBuilder::new().build_pay_to_id(
+            payment_data,
+            miden_client::note::NoteType::Public,
+            self.client.rng(),
+        )?;
+
+        logging::log!("Executing transaction");
+        let tx_execution_result = self.client.new_transaction(self.account_id, transaction_request).await?;
+
+        logging::log!("Submitting transaction");
+        let prover = std::sync::Arc::new(miden_client::RemoteTransactionProver::new(TESTNET_PROVER));
+        self.client.submit_transaction_with_prover(tx_execution_result, prover).await?;
+
+        self.model.balance().update(|balance| *balance -= amount);
+
+        Ok(())
     }
 
     pub async fn mint(&mut self) {
         todo!()
     }
 
-    fn rpc_api() -> Arc<impl miden_client::rpc::NodeRpcClient + Send> {
+    fn rpc_api() -> std::sync::Arc<impl miden_client::rpc::NodeRpcClient + Send> {
         let endpoint = miden_client::rpc::Endpoint::testnet();
         let timeout_ms = 10_000;
-        Arc::new(miden_client::rpc::TonicRpcClient::new(&endpoint, timeout_ms))
+        std::sync::Arc::new(miden_client::rpc::TonicRpcClient::new(&endpoint, timeout_ms))
     }
 
     fn rng() -> ResultDyn<Box<dyn miden_client::crypto::FeltRng>> {
@@ -208,13 +238,14 @@ impl Controller {
         Ok(Box::new(miden_client::crypto::RpoRandomCoin::new(seed.map(miden_client::Felt::new))))
     }
 
-    async fn store() -> ResultDyn<Arc<miden_client::store::web_store::WebStore>> {
-        Ok(Arc::new(miden_client::store::web_store::WebStore::new().await.map_err(|_| WebStoreInitError)?))
+    async fn store() -> ResultDyn<std::sync::Arc<miden_client::store::web_store::WebStore>> {
+        Ok(std::sync::Arc::new(miden_client::store::web_store::WebStore::new().await.map_err(|_| WebStoreInitError)?))
     }
 
-    fn keystore() -> ResultDyn<Arc<miden_client::keystore::WebKeyStore<Box<dyn miden_client::crypto::FeltRng>>>> {
+    fn keystore()
+    -> ResultDyn<std::sync::Arc<miden_client::keystore::WebKeyStore<Box<dyn miden_client::crypto::FeltRng>>>> {
         let rng = Self::rng()?;
-        Ok(Arc::new(miden_client::keystore::WebKeyStore::new(rng)))
+        Ok(std::sync::Arc::new(miden_client::keystore::WebKeyStore::new(rng)))
     }
 
     fn execution() -> ResultDyn<miden_client::ExecutionOptions> {
