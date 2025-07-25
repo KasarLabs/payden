@@ -8,12 +8,6 @@ use crate::prelude::*;
 pub fn PageReceive() -> impl IntoView {
     let context = expect_context::<Context>();
 
-    Effect::new(move |_| {
-        context.read().as_ref().map(|controller| {
-            controller.borrow().model.page().set(Page::Receive);
-        })
-    });
-
     view! {
         <div class="flex flex-col grow items-center">
             <QrCode data=sig! {

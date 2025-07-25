@@ -3,7 +3,6 @@ use leptos::prelude::*;
 use leptos_router::components::*;
 use leptos_router::hooks::use_query;
 use leptos_router::params::Params;
-use payden_model::*;
 
 use crate::prelude::*;
 
@@ -15,7 +14,6 @@ struct QuerySend {
 
 #[component]
 pub fn PageSend() -> impl IntoView {
-    let context = expect_context::<Context>();
     let message_bus = expect_context::<MessageBus>();
 
     let query = use_query::<QuerySend>();
@@ -24,12 +22,6 @@ pub fn PageSend() -> impl IntoView {
 
     let (valid_recipient, valid_recipient_set) = signal(true);
     let (valid_amount, valid_amount_set) = signal(true);
-
-    Effect::new(move |_| {
-        context.read().as_ref().map(|controller| {
-            controller.borrow().model.page().set(Page::Send);
-        })
-    });
 
     view! {
         <Form

@@ -83,58 +83,10 @@ pub fn Wallet() -> impl IntoView {
                         .unwrap_or_default()
                 }/>
                 <div class="grid grid-cols-2 gap-x-8 gap-y-4">
-                    <ButtonNavigateSend
-                        on_press=sig_async! {
-                            context.await.borrow().model.page().set(Page::Send);
-                        }
-                        active=sig! {
-                            context.read()
-                                .as_ref()
-                                .map(|controller| {
-                                    controller.borrow().model.page().get() == Page::Send
-                                })
-                                .unwrap_or(false)
-                        }
-                    />
-                    <ButtonNavigateReceive
-                        on_press=sig_async! {
-                            context.await.borrow().model.page().set(Page::Receive);
-                        }
-                        active=sig! {
-                            context.read()
-                                .as_ref()
-                                .map(|controller| {
-                                    controller.borrow().model.page().get() == Page::Receive
-                                })
-                                .unwrap_or(false)
-                        }
-                    />
-                    <ButtonNavigateFaucet
-                        on_press=sig_async! {
-                            context.await.borrow().model.page().set(Page::Faucet);
-                        }
-                        active=sig! {
-                            context.read()
-                                .as_ref()
-                                .map(|controller| {
-                                    controller.borrow().model.page().get() == Page::Faucet
-                                })
-                                .unwrap_or(false)
-                        }
-                    />
-                    <ButtonNavigateActivity
-                        on_press=sig_async! {
-                            context.await.borrow().model.page().set(Page::Activity);
-                        }
-                        active=sig! {
-                            context.read()
-                                .as_ref()
-                                .map(|controller| {
-                                    controller.borrow().model.page().get() == Page::Activity
-                                })
-                                .unwrap_or(false)
-                        }
-                    />
+                    <ButtonNavigateSend/>
+                    <ButtonNavigateReceive/>
+                    <ButtonNavigateFaucet/>
+                    <ButtonNavigateActivity/>
                 </div>
                 <Outlet/>
                 <p class="text-rose-400 italic text-s text-center font-bold w-full">

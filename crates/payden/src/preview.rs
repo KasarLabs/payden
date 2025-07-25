@@ -43,22 +43,10 @@ pub fn App() -> impl IntoView {
                         <Address address=sig! { model.address().get() }/>
                         <Balance balance=sig! { model.balance().get() }/>
                         <div class="grid grid-cols-2 grow gap-8 border-1 border-red-600 grow">
-                            <ButtonNavigateSend
-                                on_press=sig!{ model.page().set(Page::Send) }
-                                active=sig!{ model.page().get() == Page::Send }
-                            />
-                            <ButtonNavigateReceive
-                                on_press=sig!{ model.page().set(Page::Receive) }
-                                active=sig!{ model.page().get() == Page::Receive }
-                            />
-                            <ButtonNavigateFaucet
-                                on_press=sig!{ model.page().set(Page::Faucet) }
-                                active=sig!{ model.page().get() == Page::Faucet }
-                            />
-                            <ButtonNavigateActivity
-                                on_press=sig!{ model.page().set(Page::Activity) }
-                                active=sig!{ model.page().get() == Page::Activity }
-                            />
+                            <ButtonNavigateSend/>
+                            <ButtonNavigateReceive/>
+                            <ButtonNavigateFaucet/>
+                            <ButtonNavigateActivity/>
                         </div>
                         <WireButtonCopyAddress address=sig! { model.address().get() } on_press=sig! { logging::log!("Copy") }/>
                         <InputFieldAddress

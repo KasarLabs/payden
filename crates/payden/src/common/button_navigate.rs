@@ -1,14 +1,16 @@
 use crate::prelude::*;
 use leptos::prelude::*;
 
+use leptos_router::hooks::use_location;
 use private::*;
 
 #[component]
-pub fn ButtonNavigateSend(on_press: impl Fn() + Field, active: impl Fn() -> bool + Field) -> impl IntoView {
+pub fn ButtonNavigateSend() -> impl IntoView {
+    let location = use_location();
+
     view! {
         <ButtonNavigate
-            on_press=on_press
-            active=active
+            active=sig!{ location.pathname.get().contains(PATH_SEND) }
             destination=PATH_SEND
         >
             <IconSend size={ ICON_L } {..} class="fill-current m-auto"/>
@@ -18,11 +20,12 @@ pub fn ButtonNavigateSend(on_press: impl Fn() + Field, active: impl Fn() -> bool
 }
 
 #[component]
-pub fn ButtonNavigateReceive(on_press: impl Fn() + Field, active: impl Fn() -> bool + Field) -> impl IntoView {
+pub fn ButtonNavigateReceive() -> impl IntoView {
+    let location = use_location();
+
     view! {
         <ButtonNavigate
-            on_press=on_press
-            active=active
+            active=sig! { location.pathname.get().contains(PATH_RECEIVE) }
             destination=PATH_RECEIVE
         >
             <IconQr size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
@@ -32,11 +35,12 @@ pub fn ButtonNavigateReceive(on_press: impl Fn() + Field, active: impl Fn() -> b
 }
 
 #[component]
-pub fn ButtonNavigateFaucet(on_press: impl Fn() + Field, active: impl Fn() -> bool + Field) -> impl IntoView {
+pub fn ButtonNavigateFaucet() -> impl IntoView {
+    let location = use_location();
+
     view! {
         <ButtonNavigate
-            on_press=on_press
-            active=active
+            active=sig! { location.pathname.get().contains(PATH_FAUCET) }
             destination=PATH_FAUCET
         >
             <IconDrop size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
@@ -46,11 +50,10 @@ pub fn ButtonNavigateFaucet(on_press: impl Fn() + Field, active: impl Fn() -> bo
 }
 
 #[component]
-pub fn ButtonNavigateActivity(on_press: impl Fn() + Field, active: impl Fn() -> bool + Field) -> impl IntoView {
+pub fn ButtonNavigateActivity() -> impl IntoView {
     view! {
         <ButtonNavigate
-            on_press=on_press
-            active=active
+            active=sig! { false }
             destination=PATH_SEND
         >
             <IconPulse size={ ICON_L } {..} class="stroke-current stroke-[1.5] m-auto"/>
@@ -67,7 +70,6 @@ mod private {
 
     #[component]
     pub fn ButtonNavigate(
-        on_press: impl Fn() + Field,
         active: impl Fn() -> bool + Field,
         destination: &'static str,
         children: Children,
@@ -84,7 +86,6 @@ mod private {
 
         let on_click = move |_| {
             if !active() {
-                on_press();
                 animate_set.set(true);
                 animate_start(());
             }
