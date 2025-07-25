@@ -1,5 +1,4 @@
 use leptos::Params;
-use leptos::logging;
 use leptos::prelude::*;
 use leptos_router::components::*;
 use leptos_router::hooks::use_query;
@@ -16,6 +15,7 @@ struct QuerySend {
 #[component]
 pub fn PageFaucet() -> impl IntoView {
     let context = expect_context::<Context>();
+    let message_bus = expect_context::<MessageBus>();
 
     let query = use_query::<QuerySend>();
     let amount = move || query.read().as_ref().ok().and_then(|q| q.a.clone());
@@ -51,7 +51,13 @@ pub fn PageFaucet() -> impl IntoView {
                 />
             </InputTitle>
             <ButtonFullNotify
-                on_press=sig! { logging::log!("Minting...") }
+                on_press=sig! {{
+                    if let Some(amount) = amount() {
+                        let amount = amount.parse().unwrap();
+                        let message = payden_controller::ControllerAction::Mint { amount };
+                        message_bus.dispatch(message);
+                    }
+                }}
                 active=sig! { valid_amount.get() }
                 message="Requested Funds!"
             >

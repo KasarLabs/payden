@@ -5,11 +5,11 @@
 extern crate alloc;
 
 mod error;
+mod faucet;
 
 use leptos::{logging, prelude::*};
-use miden_objects::FieldElement;
 use payden_model::*;
-use rand_core::RngCore;
+use rand::RngCore;
 
 use crate::error::*;
 
@@ -20,7 +20,7 @@ const TESTNET_PROVER: &str = "https://tx-prover.testnet.miden.io"; // Delegated 
 pub enum ControllerAction {
     Refresh,
     Send { amount: f64, recipient: String },
-    Mint,
+    Mint { amount: f64 },
 }
 
 pub struct Controller {
@@ -43,7 +43,11 @@ impl Controller {
                     logging::log!("Failed to send tx: {e:?}");
                 }
             }
-            ControllerAction::Mint => logging::log!("Minting"),
+            ControllerAction::Mint { amount } => {
+                if let Err(e) = self.mint(amount).await {
+                    logging::log!("Failed to mint assets: {e:?}");
+                }
+            }
         }
     }
 
@@ -72,9 +76,11 @@ impl Controller {
         let model = reactive_stores::Store::new(payden_model::Model::default());
 
         // Restoring previous account
-        let controller = if let Some((header, _)) = client.get_account_headers().await.unwrap().first() {
+        let controller = if let Some((header, _)) = client.get_account_headers().await.unwrap().get(1) {
+            logging::log!("Loading previous account");
             Self::account_retrieve(client, store, model, header).await.unwrap()
         } else {
+            logging::log!("Creating new account");
             Self::account_generate(client, store, keystore, model).await.unwrap()
         };
 
@@ -106,9 +112,9 @@ impl Controller {
 
         // Step 3 - Update account balance
 
-        let faucet = miden_client::account::AccountId::from_bech32(TESTNET_FAUCET).expect("known address").1;
+        let faucet_id = miden_client::account::AccountId::from_bech32(TESTNET_FAUCET).expect("known address").1;
         let vault = account.vault();
-        let balance_new = vault.get_balance(faucet).unwrap() / 1_000_000;
+        let balance_new = vault.get_balance(faucet_id).unwrap() / 1_000_000;
         model.balance().set(balance_new as f64);
 
         Ok(Self { client, account_id, model })
@@ -179,10 +185,10 @@ impl Controller {
         let prover = std::sync::Arc::new(miden_client::RemoteTransactionProver::new(TESTNET_PROVER));
         self.client.submit_transaction_with_prover(tx_execution_result, prover).await?;
 
-        let faucet = miden_client::account::AccountId::from_bech32(TESTNET_FAUCET).expect("known address").1;
+        let faucet_id = miden_client::account::AccountId::from_bech32(TESTNET_FAUCET).expect("known address").1;
         let account = self.client.get_account(self.account_id).await?.expect("known address");
         let vault = account.account().vault();
-        let balance_new = vault.get_balance(faucet).expect("balance update as part of tx") / 1_000_000;
+        let balance_new = vault.get_balance(faucet_id).expect("balance update as part of tx") / 1_000_000;
 
         self.model.balance().set(balance_new as f64);
 
@@ -195,9 +201,9 @@ impl Controller {
         logging::log!("Creating assets");
         let send_amount = amount as u64 * 1_000_000;
         let (_, recipient) = miden_client::account::AccountId::from_bech32(&recipient)?;
-        let faucet = miden_client::account::AccountId::from_bech32(TESTNET_FAUCET).expect("known address").1;
+        let faucet_id = miden_client::account::AccountId::from_bech32(TESTNET_FAUCET).expect("known address").1;
 
-        let fungible_asset = miden_client::asset::FungibleAsset::new(faucet, send_amount).unwrap();
+        let fungible_asset = miden_client::asset::FungibleAsset::new(faucet_id, send_amount)?;
         let payment_data = miden_client::transaction::PaymentNoteDescription::new(
             vec![fungible_asset.into()],
             self.account_id,
@@ -223,8 +229,18 @@ impl Controller {
         Ok(())
     }
 
-    pub async fn mint(&mut self) {
-        todo!()
+    pub async fn mint(&mut self, amount: f64) -> ResultDyn<()> {
+        logging::log!("Retrieving faucet challenge");
+        let faucet = faucet::FaucetClient::new("https://faucet.testnet.miden.io".to_string());
+        let challenge = faucet.get_challenge(&self.account_id).await?;
+
+        logging::log!("Solving challenge");
+        let nonce = faucet::solve_challenge(&challenge);
+
+        logging::log!("Requesting tokens");
+        faucet.request_tokens(&self.account_id, false, amount as u64, &challenge, nonce).await?;
+
+        Ok(())
     }
 
     fn rpc_api() -> std::sync::Arc<impl miden_client::rpc::NodeRpcClient + Send> {
@@ -234,7 +250,8 @@ impl Controller {
     }
 
     fn rng() -> ResultDyn<Box<dyn miden_client::crypto::FeltRng>> {
-        let seed = [getrandom::u64()?, getrandom::u64()?, getrandom::u64()?, getrandom::u64()?];
+        let mut seed = [0u64; 4];
+        rand::fill(&mut seed);
         Ok(Box::new(miden_client::crypto::RpoRandomCoin::new(seed.map(miden_client::Felt::new))))
     }
 

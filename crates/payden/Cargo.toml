@@ -32,6 +32,5 @@ payden_model.workspace = true
 payden_controller.workspace = true
 
 # Other
-gloo-net.workspace = true
 console_error_panic_hook.workspace = true
 qrcode.workspace = true
