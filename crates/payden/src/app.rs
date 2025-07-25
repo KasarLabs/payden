@@ -1,4 +1,3 @@
-use leptos::logging;
 use leptos::prelude::*;
 use leptos_meta::*;
 use leptos_router::components::*;
@@ -138,6 +137,9 @@ pub fn Wallet() -> impl IntoView {
                     />
                 </div>
                 <Outlet/>
+                <p class="text-rose-400 italic text-s text-center font-bold w-full">
+                    Do not send mainnet funds to this address
+                </p>
             </Suspense>
         </div>
     }

@@ -19,10 +19,6 @@ pub fn QrCode(data: impl Fn() -> String + Field) -> impl IntoView {
     };
 
     view! {
-        <div inner_html=sig! { qr() } class="
-            min-x-50 min-y-50 max-w-[33vh] w-full
-            p-8
-            grow
-        "/>
+        <div inner_html=sig! { qr() } class="w-full p-8"/>
     }
 }

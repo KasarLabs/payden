@@ -6,7 +6,7 @@ pub fn Card(children: Children) -> impl IntoView {
         <div class="
             flex flex-col 
             bg-white rounded-2xl
-            w-1/3
+            w-fit
             border-1 border-gray-100
             drop-shadow-md
             p-8 m-8

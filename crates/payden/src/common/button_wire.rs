@@ -79,22 +79,23 @@ mod private {
                 }}
                 style:cursor="pointer"
                 class="
-                flex flex-row w-full
-                font-body text-base text-black
-                border-current border-1
-                bg-current rounded-md
-                transition-all duration-{ANIMATION_DURATION}
-            "
+                    flex flex-row w-full
+                    font-body text-black
+                    border-current border-1
+                    bg-current rounded-md
+                    transition-all duration-{ANIMATION_DURATION}
+                "
                 class=(["mt-0.5"], sig! { !animate.get() })
                 class=(["pb-0.5", "mt-0"], sig! { animate.get() })
             >
                 <div class="
-                flex flex-row gap-1.5 min-w-0 grow
-                bg-white rounded-md 
-                px-2.5 py-1.5 
-            ">
+                    flex flex-row gap-1.5 grow
+                    bg-white rounded-md 
+                    px-2.5 py-1.5 
+                    truncate
+                ">
                     { children() }
-                    <p class="truncate">{ sig! { text() }}</p>
+                    { sig! { text() }}
                 </div>
             </button>
         }

@@ -10,9 +10,10 @@ pub fn Address(address: impl Fn() -> String + Field) -> impl IntoView {
 
     let address_short = move || {
         let address = address();
-        if address.len() > 12 {
-            let start = address.chars().take(6).collect::<String>();
-            let stop = address.chars().rev().take(4).collect::<String>();
+        let len = address.len();
+        if len > 13 {
+            let start = address.chars().skip(5).take(4).collect::<String>();
+            let stop = address.chars().skip(len - 4).take(4).collect::<String>();
             format!("{start}...{stop}")
         } else {
             address
@@ -59,6 +60,9 @@ pub fn Address(address: impl Fn() -> String + Field) -> impl IntoView {
                 "
             >
                 <IconCopy size={ ICON_M } { .. } class="stroke-1 stroke-current"/>
+                <Tooltip  content="Miden testnet" appearance=TooltipAppearance::Inverted>
+                    <u>mtst1</u>
+                </Tooltip>
                 { sig! { address_short() }}
             </button>
             <button
