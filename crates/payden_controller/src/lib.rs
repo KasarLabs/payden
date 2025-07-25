@@ -76,7 +76,7 @@ impl Controller {
         let model = reactive_stores::Store::new(payden_model::Model::default());
 
         // Restoring previous account
-        let controller = if let Some((header, _)) = client.get_account_headers().await.unwrap().get(1) {
+        let controller = if let Some((header, _)) = client.get_account_headers().await.unwrap().first() {
             logging::log!("Loading previous account");
             Self::account_retrieve(client, store, model, header).await.unwrap()
         } else {

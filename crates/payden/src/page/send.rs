@@ -49,6 +49,7 @@ pub fn PageSend() -> impl IntoView {
                 on_press=sig! {{
                     if let (Some(amount), Some(recipient)) = (amount(), recipient()) {
                         let amount = amount.parse().unwrap();
+                        let recipient = format!("mtst1{recipient}");
                         let message = payden_controller::ControllerAction::Send { amount , recipient };
                         message_bus.dispatch(message);
                     }
