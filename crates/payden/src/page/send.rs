@@ -1,5 +1,4 @@
 use leptos::Params;
-use leptos::logging;
 use leptos::prelude::*;
 use leptos_router::components::*;
 use leptos_router::hooks::use_query;
@@ -42,13 +41,6 @@ pub fn PageSend() -> impl IntoView {
             <InputTitle title="Recipient">
                 <InputFieldAddress
                     address=recipient
-                    address_update=sig! { address => {
-                        context.read()
-                            .as_ref()
-                            .map(|controller| {
-                                controller.borrow().model.address_send().set(address)
-                            });
-                    }}
                     validity_update=sig! { valid => valid_recipient_set.set(valid) }
                     url_encode="r"
                     {..}
@@ -57,13 +49,6 @@ pub fn PageSend() -> impl IntoView {
             <InputTitle title="Amount">
                 <InputFieldAmount
                     amount=amount
-                    amount_update=sig! { amount => {
-                        context.read()
-                            .as_ref()
-                            .map(|controller| {
-                                controller.borrow().model.amount_send().set(amount)
-                            });
-                    }}
                     validity_update=sig! { valid => valid_amount_set.set(valid) }
                     url_encode="a"
                 />

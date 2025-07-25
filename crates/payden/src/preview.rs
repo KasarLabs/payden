@@ -12,8 +12,6 @@ pub fn App() -> impl IntoView {
     let model = Store::new(Model::default());
     model.address().set("0x84f5946bb3Bf4630Afe6aB94EAC561bD015F67c0".to_string());
 
-    model.amount_send().set("$0.000000".to_string());
-
     if cfg!(feature = "icons") {
         view! {
             <Preview class="flex flex-col m-auto border-1 border-red-600">
@@ -65,13 +63,11 @@ pub fn App() -> impl IntoView {
                         <WireButtonCopyAddress address=sig! { model.address().get() } on_press=sig! { logging::log!("Copy") }/>
                         <InputFieldAddress
                             address=sig! { Some(model.address().get()) }
-                            address_update=sig! { address_new => model.address().update(|address| *address = address_new) }
                             validity_update=sig! { _ => () }
                             url_encode="r"
                         />
                         <InputFieldAmount
-                            amount=sig! { Some(model.amount_send().get()) }
-                            amount_update=sig! { amount_new => model.amount_send().update(|amount| *amount = amount_new )}
+                            amount=sig! { Some("100".to_string()) }
                             validity_update=sig! { _ => () }
                             url_encode="a"
                         />

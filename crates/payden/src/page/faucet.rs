@@ -38,14 +38,6 @@ pub fn PageFaucet() -> impl IntoView {
             <InputTitle title="Amount">
                 <InputFieldAmount
                     amount=amount
-                    amount_update=sig! { amount => {
-                        context
-                            .read()
-                            .as_ref()
-                            .map(|controller| {
-                                controller.borrow().model.amount_faucet().set(amount)
-                            });
-                    }}
                     validity_update=sig! { valid => valid_amount_set.set(valid) }
                     url_encode="a"
                 />

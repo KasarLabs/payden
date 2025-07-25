@@ -6,14 +6,12 @@ use private::*;
 #[component]
 pub fn InputFieldAmount(
     amount: impl Fn() -> Option<String> + Field,
-    amount_update: impl Fn(String) + Field,
     validity_update: impl Fn(bool) + Field,
     url_encode: &'static str,
 ) -> impl IntoView {
     view! {
         <InputField
             text=amount
-            text_update=amount_update
             validity_update=validity_update
             text_placeholder=PLACEHOLDER_AMOUNT
             text_prefix=PREFIX_AMOUNT
@@ -26,14 +24,12 @@ pub fn InputFieldAmount(
 #[component]
 pub fn InputFieldAddress(
     address: impl Fn() -> Option<String> + Field,
-    address_update: impl Fn(String) + Field,
     validity_update: impl Fn(bool) + Field,
     url_encode: &'static str,
 ) -> impl IntoView {
     view! {
         <InputField
             text=address
-            text_update=address_update
             validity_update=validity_update
             text_placeholder=PLACEHOLDER_ADDRESS
             text_prefix=PREFIX_ADDRESS
@@ -50,7 +46,6 @@ mod private {
     #[component]
     pub fn InputField(
         text: impl Fn() -> Option<String> + Field,
-        text_update: impl Fn(String) + Field,
         validity_update: impl Fn(bool) + Field,
         text_placeholder: &'static str,
         text_prefix: &'static str,
@@ -95,7 +90,6 @@ mod private {
 
                             if let Some(input) = node_ref.get() && input.check_validity() {
                                 validity_update(true);
-                                text_update(text);
                             } else {
                                 validity_update(false);
                             }
